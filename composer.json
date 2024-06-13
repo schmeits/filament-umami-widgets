@@ -1,29 +1,27 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "schmeits/filament-umami-widgets",
+    "description": "Umami Analytics Widgets for Filament",
     "keywords": [
-        ":vendor_name",
+        "schmeits",
         "laravel",
-        ":package_slug"
+        "filament-umami-widgets"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/schmeits/filament-umami-widgets",
     "support": {
-        "issues": "https://github.com/:vendor_slug/:package_slug/issues",
-        "source": "https://github.com/:vendor_slug/:package_slug"
+        "issues": "https://github.com/schmeits/filament-umami-widgets/issues",
+        "source": "https://github.com/schmeits/filament-umami-widgets"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Tally Schmeits",
+            "email": "tally@schmeits.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.1",
         "filament/filament": "^3.0",
-        "filament/forms": "^3.0",
-        "filament/tables": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
@@ -41,13 +39,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Schmeits\\FilamentUmamiWidgets\\": "src/",
+            "Schmeits\\FilamentUmamiWidgets\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "Schmeits\\FilamentUmamiWidgets\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -67,10 +65,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Schmeits\\FilamentUmamiWidgets\\FilamentUmamiWidgetsServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "FilamentUmamiWidgets": "Schmeits\\FilamentUmamiWidgets\\Facades\\FilamentUmamiWidgets"
             }
         }
     },
