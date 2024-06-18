@@ -1,6 +1,6 @@
 <?php
 
-namespace Schmeits\FilamentUmamiWidgets\Tests;
+namespace Schmeits\FilamentUmami\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use Schmeits\FilamentUmamiWidgets\FilamentUmamiWidgetsServiceProvider;
+use Schmeits\FilamentUmami\FilamentUmamiServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -25,7 +25,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Schmeits\\FilamentUmamiWidgets\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Schmeits\\FilamentUmami\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
     }
 
@@ -44,7 +44,7 @@ class TestCase extends Orchestra
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
-            FilamentUmamiWidgetsServiceProvider::class,
+            FilamentUmamiServiceProvider::class,
         ];
     }
 

@@ -44,8 +44,8 @@ return [
 ## Usage
 
 ```php
-$filamentUmamiWidgets = new Schmeits\FilamentUmamiWidgets();
-echo $filamentUmamiWidgets->echoPhrase('Hello, Schmeits!');
+$filamentUmami = new Schmeits\FilamentUmami();
+echo $filamentUmami->echoPhrase('Hello, Schmeits!');
 ```
 
 ## Testing

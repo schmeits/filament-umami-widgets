@@ -1,5 +1,5 @@
 <?php
 
-use Schmeits\FilamentUmamiWidgets\Tests\TestCase;
+use Schmeits\FilamentUmami\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

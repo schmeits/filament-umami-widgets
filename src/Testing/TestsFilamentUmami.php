@@ -1,13 +1,13 @@
 <?php
 
-namespace Schmeits\FilamentUmamiWidgets\Testing;
+namespace Schmeits\FilamentUmami\Testing;
 
 use Livewire\Features\SupportTesting\Testable;
 
 /**
  * @mixin Testable
  */
-class TestsFilamentUmamiWidgets
+class TestsFilamentUmami
 {
     //
 }

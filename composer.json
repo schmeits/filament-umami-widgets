@@ -20,8 +20,9 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.1|^8.2|^8.3",
         "filament/filament": "^3.0",
+        "malzariey/filament-daterangepicker-filter": "^2.6",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
@@ -39,13 +40,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Schmeits\\FilamentUmamiWidgets\\": "src/",
-            "Schmeits\\FilamentUmamiWidgets\\Database\\Factories\\": "database/factories/"
+            "Schmeits\\FilamentUmami\\": "src/",
+            "Schmeits\\FilamentUmami\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Schmeits\\FilamentUmamiWidgets\\Tests\\": "tests/"
+            "Schmeits\\FilamentUmami\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -65,10 +66,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Schmeits\\FilamentUmamiWidgets\\FilamentUmamiWidgetsServiceProvider"
+                "Schmeits\\FilamentUmami\\FilamentUmamiServiceProvider"
             ],
             "aliases": {
-                "FilamentUmamiWidgets": "Schmeits\\FilamentUmamiWidgets\\Facades\\FilamentUmamiWidgets"
+                "FilamentUmami": "Schmeits\\FilamentUmami\\Facades\\FilamentUmami"
             }
         }
     },
