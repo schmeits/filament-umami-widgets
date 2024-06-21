@@ -2,6 +2,10 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.2.0 - 2024-06-21
+
+Added Widgetmanager to register the Widgets to be used on other pages
+
 ## 1.1.0 - 2024-06-21
 
 Added some Table Widgets
