@@ -44,6 +44,8 @@ class FilamentUmamiServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        WidgetManager::make()->boot();
+
         // Testing
         Testable::mixin(new TestsFilamentUmami());
     }
