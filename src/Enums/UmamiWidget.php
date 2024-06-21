@@ -2,4 +2,6 @@
 
 namespace Schmeits\FilamentUmami\Enums;
 
-interface UmamiWidget {}
+interface UmamiWidget
+{
+}

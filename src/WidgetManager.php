@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Schmeits\FilamentUmami;
 
+use Filament\Widgets\Widget;
 use Filament\Widgets\WidgetConfiguration;
 use Livewire\Livewire;
 use Livewire\Mechanisms\ComponentRegistry;
