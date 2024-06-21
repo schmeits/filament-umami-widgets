@@ -10,4 +10,3 @@ parameters:
     checkOctaneCompatibility: true
     checkModelProperties: true
     ignoreErrors:
-        - '#Call to an undefined static method#'

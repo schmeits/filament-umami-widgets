@@ -6,6 +6,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Schmeits\FilamentUmami\Concerns\Filter;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
@@ -18,15 +19,25 @@ abstract class UmamiBaseTableWidget extends Widget
 
     protected static ?int $sort = -9;
 
-    protected static string $view = 'filament-umami-widgets::table-widget';
-
     protected ?string $heading = null;
 
-    public string $id = '';
+    protected string $id = '';
 
-    public function mount()
+    protected bool $limitResults = false;
+
+    protected static string $view = 'filament-umami-widgets::table-widget';
+
+    public ?string $option = null;
+
+    public int $limit = 500;
+
+    public function mount(): void
     {
         $this->heading = trans("filament-umami-widgets::translations.widget.$this->id.heading");
+        $this->option = collect($this->getOptions())->keys()->first();
+        if ($this->limitResults) {
+            $this->limit = 5;
+        }
     }
 
     public function getPollingInterval(): ?string
@@ -42,22 +53,34 @@ abstract class UmamiBaseTableWidget extends Widget
     public function getHeaders(): array
     {
         return [
-            [
-                'name' => 'metric',
-                'label' => trans("filament-umami-widgets::translations.widget.$this->id.headers.metric"),
-                'width' => '90%',
-            ],
-            [
-                'name' => 'count',
-                'label' => trans("filament-umami-widgets::translations.widget.$this->id.headers.count"),
-                'width' => '10%',
-            ],
+            $this->getDefaultMetricHeaderItem(),
+            $this->getDefaultCountHeaderItem(),
+        ];
+    }
+
+    protected function getDefaultMetricHeaderItem(string $width = '90%'): array
+    {
+        return [
+            'name' => 'metric',
+            'label' => trans("filament-umami-widgets::translations.widget.$this->id.headers.metric"),
+            'width' => $width,
+        ];
+    }
+
+    protected function getDefaultCountHeaderItem(string $width = '10%'): array
+    {
+        return [
+            'name' => 'count',
+            'label' => (Lang::has("filament-umami-widgets::translations.widget.$this->id.headers.count") ? trans("filament-umami-widgets::translations.widget.$this->id.headers.count") : trans('filament-umami-widgets::translations.widget.global.headers.count')),
+            'width' => $width,
         ];
     }
 
     public function getDescription(): ?string
     {
-        return trans("filament-umami-widgets::translations.widget.$this->id.description");
+        return (Lang::has("filament-umami-widgets::translations.widget.{$this->id}.description_prefix") ? trans("filament-umami-widgets::translations.widget.{$this->id}.description_prefix") : trans('filament-umami-widgets::translations.widget.global.description_prefix')) .
+            trans("filament-umami-widgets::translations.widget.{$this->id}.description") .
+            (Lang::has("filament-umami-widgets::translations.widget.{$this->id}.description_postfix") ? trans("filament-umami-widgets::translations.widget.{$this->id}.description_postfix") : trans('filament-umami-widgets::translations.widget.global.description_postfix'));
     }
 
     public function getData(): array
@@ -65,9 +88,23 @@ abstract class UmamiBaseTableWidget extends Widget
         return [];
     }
 
-    /**
-     * @throws \Throwable
-     */
+    public function getOptions(): array
+    {
+        return [];
+    }
+
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    public function setLimit(int $limit): self
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
     public function getFilter(): Filter
     {
         $filter = $this->filters['date_range'] ?? null;
@@ -87,6 +124,12 @@ abstract class UmamiBaseTableWidget extends Widget
 
         return (new Filter())
             ->setFrom($startDate)
-            ->setTo($endDate);
+            ->setTo($endDate)
+            ->setLimit($this->getLimit());
+    }
+
+    public function hasLimitedResults(): bool
+    {
+        return $this->limitResults;
     }
 }

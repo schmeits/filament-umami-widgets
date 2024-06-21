@@ -123,6 +123,7 @@ return [
     |
     */
     'cache_time' => 300,
+    
 ];
 ```
 
@@ -170,10 +171,10 @@ There are different predefined widgets available to use in your dashboard
 
 ```php
 ->widgets([
-    // this is the grouped widget
+    // this is the grouped stats widget
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetStatsGrouped::class,
 
-    // these are the separate widgets
+    // these are the separate stats widgets
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetStatsLiveVisitors::class,
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetStatsPageViews::class,
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetStatsVisitors::class,
@@ -182,10 +183,29 @@ There are different predefined widgets available to use in your dashboard
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetStatsTotalTime::class,
 
     // and some table widgets
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableUrls::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableTitle::class,
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableReferrers::class,
-    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableUrls::class,    
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableCountry::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableRegion::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableCity::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableDevice::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableOs::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableBrowser::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableLanguage::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableScreen::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableEvents::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableQuery::class,
+
+    // grouped table widgets
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableGroupedPages::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableGroupedGeo::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableGroupedClientInfo::class,
+
 ])
 ```
+
+### Stats Widgets
 
 #### Live Visitors
 ![stats-live-visitors.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/stats-live-visitors.jpg)
@@ -205,11 +225,48 @@ There are different predefined widgets available to use in your dashboard
 #### Time spent on the website (formatted H:i)
 ![stats-total-time.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/stats-total-time.jpg)
 
-### Referrer list
-![stats-referrers.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/stats-referrers.jpg)
+### Metrics Widgets
 
-### Url list
-![stats-urls.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/stats-urls.jpg)
+#### Referrers
+![metrics-referrers.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-referrers.jpg)
+
+#### Url's of the visited pages
+![metrics-url.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-url.jpg)
+
+#### Titles of the visited pages
+![metrics-titles.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-titles.jpg)
+
+#### Browsers used
+![metrics-browsers.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-browsers.jpg)
+
+#### Operating systems used
+![metrics-os.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-os.jpg)
+
+#### Devices systems used
+![metrics-devices.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-devices.jpg)
+
+#### Languages used
+![metrics-language.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-language.jpg)
+
+#### Screen resolutions used
+![metrics-resolutions.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-resolutions.jpg)
+
+#### Events occurred
+![metrics-events.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-events.jpg)
+
+#### Query strings
+![metrics-querystring.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-querystring.jpg)
+
+### Grouped Metrics Widgets
+
+#### Geo information (Countries, Regions, Cities)
+![metrics-grouped-geo.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-grouped-geo.jpg)
+
+#### Visited Pages (URL, Title)
+![metrics-grouped-pages.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-grouped-pages.jpg)
+
+#### Client Info (Browsers, OS, Devices, Screens, Languages)
+![metrics-grouped-client-info.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-grouped-client-info.jpg)
 
 ### Configure the plugin
 
@@ -266,11 +323,32 @@ $total_time = FilamentUmami::totalTime($filter);
 
 // *** METRICS ***
 
-// Get referrers
-$referrer = FilamentPirsch::metricsReferrer($filter);
+// Get pages visited url's
+$pages = FilamentUmami::metricsPages($filter);
+// or
+$pages = FilamentUmami::metrics($filter, \Schmeits\FilamentUmami\Enums\UmamiMetricTypes::METRIC_PAGES);
 
-// Get URL's visited
-$urls = FilamentPirsch::metricsUrl($filter);
+```
+
+## Available Metrics
+
+```php
+enum UmamiMetricTypes: string
+{
+    case METRIC_PAGES = 'url'; // Url's of the Pages visited
+    case METRIC_TITLE = 'title'; // Titles of the Pages visited
+    case METRIC_REFERRER = 'referrer'; // Referrers (where do the visitors come from)
+    case METRIC_BROWSER = 'browser'; // Browser (Chrome, Edge, Safari, etc.)
+    case METRIC_OS = 'os'; // Operating system (iOS, MacOS, etc.)
+    case METRIC_DEVICE = 'device'; // Devices (Laptop, Mobile, etc.)
+    case METRIC_COUNTRY = 'country'; // Countries (US, NL, etc.)
+    case METRIC_REGION = 'region'; // Regions (NL-LI, US-AZ, NL-NH, etc.)
+    case METRIC_CITY = 'city'; // Cities (Amsterdam, Netherlands / Phoenix, United States / etc)
+    case METRIC_LANGUAGE = 'language'; // Languages (Dutch, English, etc.)
+    case METRIC_SCREEN = 'screen'; // Screen resolutions (1440x900, 1920x1200, etc.)
+    case METRIC_EVENT = 'event'; // Events (Clicked link, etc.)
+    case METRIC_QUERY = 'query'; // Query parameters (search=test, etc.)
+}
 
 ```
 

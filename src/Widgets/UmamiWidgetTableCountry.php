@@ -4,16 +4,14 @@ namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
-class UmamiWidgetTableUrls extends UmamiBaseTableWidget
+class UmamiWidgetTableCountry extends UmamiBaseTableWidget
 {
     protected int | string | array $columnSpan = '1';
 
-    public string $id = 'metrics_url';
-
-    protected bool $limitResults = true;
+    public string $id = 'metrics_country';
 
     public function getData(): array
     {
-        return FilamentUmami::metricsPages($this->getFilter());
+        return FilamentUmami::metricsCountry($this->getFilter());
     }
 }

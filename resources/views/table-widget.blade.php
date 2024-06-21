@@ -1,8 +1,10 @@
 @php
     $tableHeading = $this->getTableHeading();
     $headers = $this->getHeaders();
-    $data = $this->getData();
+    $data = array_slice($this->getData(), 0, $this->getLimit());
     $description = $this->getDescription();
+    $options = $this->getOptions();
+    $hasOptions = count($options) > 0;
 @endphp
 <x-filament-widgets::widget class="fi-wi-stats-overview">
     <div
@@ -12,18 +14,59 @@
     >
         <div
             class="fi-ta-ctn divide-y divide-gray-200 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:divide-white/10 dark:bg-gray-900 dark:ring-white/10">
-            @if ($tableHeading)
+            @if ($tableHeading || $hasOptions || $this->hasLimitedResults())
                 <div class="fi-ta-header-ctn divide-y divide-gray-200 dark:divide-white/10">
                     <div class="fi-ta-header flex flex-col gap-3 p-4 sm:px-6 sm:flex-row sm:items-center">
-                        <div class="grid gap-y-1">
-                            <h3 class="fi-ta-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                                {{ $this->getTableHeading() }}
+                        <div class="grid gap-y-1" wire:ignore>
+                            @if ($tableHeading)
+                            <h3 class="fi-ta-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white" >
+                                {{ $tableHeading }}
                             </h3>
+                            @endif
+                        </div>
+                        <div class="fi-ta-actions flex shrink-0 items-center gap-3 flex-wrap justify-start sm:ms-auto">
+                            @if ($this->limitResults)
+                                <div class="fi-ac-select-action">
+                                    <label for="select" class="sr-only">
+                                        Limit
+                                    </label>
+                                    <div class="fi-input-wrp flex rounded-lg shadow-sm ring-1 transition duration-75 bg-white dark:bg-white/5 [&amp;:not(:has(.fi-ac-action:focus))]:focus-within:ring-2 ring-gray-950/10 dark:ring-white/20 [&amp;:not(:has(.fi-ac-action:focus))]:focus-within:ring-primary-600 dark:[&amp;:not(:has(.fi-ac-action:focus))]:focus-within:ring-primary-500">
+                                        <div class="min-w-0 flex-1">
+                                            <select class="fi-select-input block w-full border-none bg-transparent py-1.5 pe-8 text-base text-gray-950 transition duration-75 focus:ring-0 disabled:text-gray-500 disabled:[-webkit-text-fill-color:theme(colors.gray.500)] dark:text-white dark:disabled:text-gray-400 dark:disabled:[-webkit-text-fill-color:theme(colors.gray.400)] sm:text-sm sm:leading-6 [&amp;_optgroup]:bg-white [&amp;_optgroup]:dark:bg-gray-900 [&amp;_option]:bg-white [&amp;_option]:dark:bg-gray-900 ps-3" id="limit" wire:model.live="limit">
+                                                <option value="5">{{ trans("filament-umami-widgets::translations.widget.global.limit", ['count' => 5]) }}</option>
+                                                <option value="10">{{ trans("filament-umami-widgets::translations.widget.global.limit", ['count' => 10]) }}</option>
+                                                <option value="20">{{ trans("filament-umami-widgets::translations.widget.global.limit", ['count' => 20]) }}</option>
+                                                <option value="50">{{ trans("filament-umami-widgets::translations.widget.global.limit", ['count' => 50]) }}</option>
+                                                <option value="500">{{ trans("filament-umami-widgets::translations.widget.global.limit_show_all") }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($hasOptions)
+                            <div class="fi-ac-select-action">
+                                <label for="select" class="sr-only">
+                                    Select
+                                </label>
+                                <div class="fi-input-wrp flex rounded-lg shadow-sm ring-1 transition duration-75 bg-white dark:bg-white/5 [&amp;:not(:has(.fi-ac-action:focus))]:focus-within:ring-2 ring-gray-950/10 dark:ring-white/20 [&amp;:not(:has(.fi-ac-action:focus))]:focus-within:ring-primary-600 dark:[&amp;:not(:has(.fi-ac-action:focus))]:focus-within:ring-primary-500">
+                                    <div class="min-w-0 flex-1">
+                                        <select class="fi-select-input block w-full border-none bg-transparent py-1.5 pe-8 text-base text-gray-950 transition duration-75 focus:ring-0 disabled:text-gray-500 disabled:[-webkit-text-fill-color:theme(colors.gray.500)] dark:text-white dark:disabled:text-gray-400 dark:disabled:[-webkit-text-fill-color:theme(colors.gray.400)] sm:text-sm sm:leading-6 [&amp;_optgroup]:bg-white [&amp;_optgroup]:dark:bg-gray-900 [&amp;_option]:bg-white [&amp;_option]:dark:bg-gray-900 ps-3" id="option" wire:model.live="option">
+                                            @foreach($options as $key=>$option)
+                                                <option value="{{ $key }}">
+                                                    {{ $option }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
-            @endif
 
+            @endif
             <div class="fi-ta-content relative divide-y divide-gray-200 overflow-x-auto dark:divide-white/10 dark:border-t-white/10">
                 <table class="fi-ta-table w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5">
                     <thead class="divide-y divide-gray-200 dark:divide-white/5">
@@ -51,7 +94,21 @@
                                                     <div class="flex max-w-max" style="">
                                                         <div class="fi-ta-text-item inline-flex items-center gap-1.5">
                                                     <span class="fi-ta-text-item-label text-sm leading-6 text-gray-950 dark:text-white" style="">
-                                                        {{ $row[$header['name']] ?? '' }}
+                                                        @php
+                                                            $value = $row[$header['name']];
+                                                        @endphp
+                                                        @if (is_array($value))
+                                                            <div class="flex flex-wrap grow-1 gap-1">
+                                                            @foreach ($value as $k=>$v)
+                                                                <div class="flex gap-1">
+                                                                    <x-filament::badge>{{ $k }}</x-filament::badge>
+                                                                    <span>{{ $v }}</span>
+                                                                </div>
+                                                            @endforeach
+                                                            </div>
+                                                        @else
+                                                            {{ $value ?? '' }}
+                                                        @endif
                                                     </span>
                                                         </div>
                                                     </div>

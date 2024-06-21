@@ -70,7 +70,7 @@ class UmamiClient
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_ACTIVE, $filter);
 
-        $value = $this->callApi('active', $options);
+        $value = $this->callWebsiteApi('active', $options);
 
         return $value['x'] ?? 0;
     }
@@ -80,7 +80,7 @@ class UmamiClient
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_STATS, $filter);
 
         return $this->getCachedValue('get-stats-' . $filter->hash(), function () use ($options) {
-            return $this->callApi('stats', $options);
+            return $this->callWebsiteApi('stats', $options);
         });
     }
 
@@ -91,7 +91,7 @@ class UmamiClient
         $options['type'] = $type->value;
 
         return $this->getCachedValue('get-metrics-' . $type->value . '-' . $filter->hash(), function () use ($options) {
-            return $this->callApi('metrics', $options);
+            return $this->callWebsiteApi('metrics', $options);
         });
     }
 
@@ -100,9 +100,14 @@ class UmamiClient
         return Cache::remember($key, config('filament-umami-widgets.cache_time'), $callback);
     }
 
+    public function callWebsiteApi(string $url, array $options): array
+    {
+        return $this->callApi("websites/{$this->site_id}/{$url}", $options);
+    }
+
     public function callApi(string $url, array $options): array
     {
-        $response = $this->http->get("websites/{$this->site_id}/{$url}", $options);
+        $response = $this->http->get($url, $options);
 
         if ($response->ok()) {
             return $response->json();
@@ -163,14 +168,15 @@ class UmamiClient
         ];
 
         // default date options
-        $defaultDatesOptions = [
+        $filterOptions = [
             'startAt' => $filter->from->getTimestampMs(),
             'endAt' => $filter->to->getTimestampMs(),
+            'limit' => $filter->getLimit(),
         ];
 
         return array_merge(
             $defaultOptions[$endpoint->value], // options based on endpoint
-            $defaultDatesOptions, // default dates
+            $filterOptions // filter options
         );
     }
 

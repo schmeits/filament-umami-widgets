@@ -4,16 +4,16 @@ namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
-class UmamiWidgetTableReferrers extends UmamiBaseTableWidget
+class UmamiWidgetTableEvents extends UmamiBaseTableWidget
 {
     protected int | string | array $columnSpan = '1';
 
-    public string $id = 'metrics_referrer';
+    public string $id = 'metrics_event';
 
     protected bool $limitResults = true;
 
     public function getData(): array
     {
-        return FilamentUmami::metricsReferrer($this->getFilter());
+        return FilamentUmami::metricsEvent($this->getFilter());
     }
 }

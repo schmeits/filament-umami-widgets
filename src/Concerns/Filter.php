@@ -19,6 +19,8 @@ class Filter
 
     protected Unit $unit = Unit::UNIT_DAY;
 
+    protected int $limit = 500;
+
     public function __construct()
     {
         $this->tz = config('app.timezone');
@@ -38,6 +40,7 @@ class Filter
             'tz' => $this->tz,
             'event' => $this->event,
             'unit' => $this->unit,
+            'limit' => $this->limit,
         ]);
     }
 
@@ -114,6 +117,18 @@ class Filter
         $this->unit = $unit;
 
         return $this;
+    }
+
+    public function setLimit(int $limit): Filter
+    {
+        $this->limit = $limit;
+
+        return $this;
+    }
+
+    public function getLimit(): int
+    {
+        return $this->limit;
     }
 
     public function getDayDiff(): int

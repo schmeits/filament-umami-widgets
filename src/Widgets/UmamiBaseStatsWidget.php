@@ -6,6 +6,7 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Schmeits\FilamentUmami\Concerns\Filter;
 use Schmeits\FilamentUmami\Enums\UmamiStatsWidgets;
@@ -49,7 +50,10 @@ abstract class UmamiBaseStatsWidget extends BaseWidget
         };
 
         $label = trans("filament-umami-widgets::translations.widget.{$widget->value}.label");
-        $description = trans("filament-umami-widgets::translations.widget.{$widget->value}.description") .
+        $description =
+            (Lang::has("filament-umami-widgets::translations.widget.{$widget->value}.description_prefix") ? trans("filament-umami-widgets::translations.widget.{$widget->value}.description_prefix") : trans('filament-umami-widgets::translations.widget.global.description_prefix')) .
+            trans("filament-umami-widgets::translations.widget.{$widget->value}.description") .
+            (Lang::has("filament-umami-widgets::translations.widget.{$widget->value}.description_postfix") ? trans("filament-umami-widgets::translations.widget.{$widget->value}.description_postfix") : trans('filament-umami-widgets::translations.widget.global.description_postfix')) .
             trans_choice('filament-umami-widgets::translations.widget.global.time_range_days', $filter->getDayDiff(), ['value' => $filter->getDayDiff()]);
 
         return Stat::make($label, $value)

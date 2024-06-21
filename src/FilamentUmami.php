@@ -4,6 +4,7 @@ namespace Schmeits\FilamentUmami;
 
 use Carbon\CarbonInterval;
 use Exception;
+use Illuminate\Support\Facades\Lang;
 use Schmeits\FilamentUmami\Concerns\Filter;
 use Schmeits\FilamentUmami\Concerns\UmamiClient;
 use Schmeits\FilamentUmami\Enums\UmamiMetricTypes;
@@ -18,6 +19,11 @@ class FilamentUmami
     public function __construct()
     {
         $this->client = new UmamiClient();
+    }
+
+    public function getClient(): UmamiClient
+    {
+        return $this->client;
     }
 
     public function activeVisitors(Filter $filter): int
@@ -60,17 +66,119 @@ class FilamentUmami
         return CarbonInterval::seconds($stats['totaltime']['value'] ?? 0)->cascade()->format('%I:%S');
     }
 
-    public function metricsReferrer(Filter $filter): array
+    public function metricsPages(Filter $filter): array
     {
-        $metrics = $this->client->getMetrics($filter, UmamiMetricTypes::METRIC_REFERRER);
-
-        return collect($metrics)->map(fn ($item) => ['metric' => $item['x'] ?: trans('filament-umami-widgets::translations.widget.metrics_referrer.empty_referrer'), 'count' => (int) $item['y']])->toArray();
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_PAGES);
     }
 
-    public function metricsUrl(Filter $filter): array
+    public function metricsTitle(Filter $filter): array
     {
-        $metrics = $this->client->getMetrics($filter, UmamiMetricTypes::METRIC_URL);
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_TITLE);
+    }
 
-        return collect($metrics)->map(fn ($item) => ['metric' => $item['x'] ?? '', 'count' => (int) $item['y']])->toArray();
+    public function metricsReferrer(Filter $filter): array
+    {
+        return $this->transformUmamiMetricResult(
+            $this->client->getMetrics($filter, UmamiMetricTypes::METRIC_REFERRER),
+            trans('filament-umami-widgets::translations.widget.metrics_referrer.empty_metric')
+        );
+    }
+
+    public function metricsBrowser(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_BROWSER);
+    }
+
+    public function metricsOs(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_OS);
+    }
+
+    public function metricsDevice(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_DEVICE);
+    }
+
+    public function metricsCountry(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_COUNTRY);
+    }
+
+    public function metricsRegion(Filter $filter): array
+    {
+        $metrics = $this->client->getMetrics($filter, UmamiMetricTypes::METRIC_REGION);
+
+        return collect($metrics)
+            ->map(
+                fn ($item) => [
+                    'metric' => $item['x'] ?: (Lang::has('filament-umami-widgets::translations.widget.metrics_region.empty_metric') ? trans('filament-umami-widgets::translations.widget.metrics_region.empty_metric') : ''),
+                    'country' => $item['country'] ?: '',
+                    'count' => (int) $item['y'],
+                ]
+            )->toArray();
+    }
+
+    public function metricsCity(Filter $filter): array
+    {
+        $metrics = $this->client->getMetrics($filter, UmamiMetricTypes::METRIC_CITY);
+
+        return collect($metrics)
+            ->map(
+                fn ($item) => [
+                    'metric' => $item['x'] ?: (Lang::has('filament-umami-widgets::translations.widget.metrics_city.empty_metric') ? trans('filament-umami-widgets::translations.widget.metrics_city.empty_metric') : ''),
+                    'country' => $item['country'] ?: '',
+                    'count' => (int) $item['y'],
+                ]
+            )->toArray();
+    }
+
+    public function metricsLanguage(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_LANGUAGE);
+    }
+
+    public function metricsScreen(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_SCREEN);
+    }
+
+    public function metricsEvent(Filter $filter): array
+    {
+        return $this->metrics($filter, UmamiMetricTypes::METRIC_EVENT);
+    }
+
+    public function metricsQuery(Filter $filter): array
+    {
+        return collect($this->client->getMetrics($filter, UmamiMetricTypes::METRIC_QUERY))
+            ->map(function ($item) {
+                $metric = $item['x'];
+                if (filled($metric)) {
+                    parse_str($metric, $items);
+                    $metric = $items;
+                }
+
+                return [
+                    'metric' => $metric,
+                    'count' => (int) $item['y'],
+                ];
+            })
+            ->toArray();
+    }
+
+    public function metrics(Filter $filter, UmamiMetricTypes $type): array
+    {
+        return $this->transformUmamiMetricResult(
+            $this->client->getMetrics($filter, $type)
+        );
+    }
+
+    protected function transformUmamiMetricResult(array $metrics, string $defaultEmptyValue = ''): array
+    {
+        return collect($metrics)
+            ->map(fn ($item) => [
+                'metric' => $item['x'] ?: $defaultEmptyValue,
+                'count' => (int) $item['y'],
+            ])
+            ->toArray();
     }
 }
