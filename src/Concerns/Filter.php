@@ -24,7 +24,7 @@ class Filter
     public function __construct()
     {
         $this->tz = config('app.timezone');
-        $this->from = now()->startOfDay();
+        $this->from = now()->subDays(7)->startOfDay();
         $this->to = now()->endOfDay();
     }
 
