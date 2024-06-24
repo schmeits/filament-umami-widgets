@@ -176,5 +176,13 @@ return [
                 'language' => 'Talen',
             ],
         ],
+        'chart_pageviews' => [
+            'heading' => 'Pagina views (laatste 7 dagen)',
+            'dataset_label' => 'Pagina views',
+        ],
+        'chart_sessions' => [
+            'heading' => 'Sessies (laatste 7 dagen)',
+            'dataset_label' => 'Sessies',
+        ],
     ],
 ];

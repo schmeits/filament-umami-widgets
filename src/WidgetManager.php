@@ -40,6 +40,8 @@ class WidgetManager
         Widgets\UmamiWidgetTableScreen::class,
         Widgets\UmamiWidgetTableTitle::class,
         Widgets\UmamiWidgetTableUrls::class,
+        Widgets\UmamiWidgetGraphPageViews::class,
+        Widgets\UmamiWidgetGraphSessions::class,
     ];
 
     public static function make(): static

@@ -5,14 +5,13 @@ namespace Schmeits\FilamentUmami\Widgets;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Str;
-use Schmeits\FilamentUmami\Concerns\Filter;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
+use Schmeits\FilamentUmami\Traits\GetFilterForWidget;
 
 abstract class UmamiBaseTableWidget extends Widget
 {
+    use GetFilterForWidget;
     use InteractsWithPageFilters;
 
     protected int | string | array $columnSpan = 'full';
@@ -28,8 +27,6 @@ abstract class UmamiBaseTableWidget extends Widget
     protected static string $view = 'filament-umami-widgets::table-widget';
 
     public ?string $option = null;
-
-    public int $limit = 500;
 
     public function mount(): void
     {
@@ -91,41 +88,6 @@ abstract class UmamiBaseTableWidget extends Widget
     public function getOptions(): array
     {
         return [];
-    }
-
-    public function getLimit(): int
-    {
-        return $this->limit;
-    }
-
-    public function setLimit(int $limit): self
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    public function getFilter(): Filter
-    {
-        $filter = $this->filters['date_range'] ?? null;
-
-        if ($filter === null) {
-            $filter = now()->subDays(30)->format('Y-m-d') . ' - ' . now()->endOfDay()->format('Y-m-d');
-        }
-
-        $dateParts = explode(' - ', Str::remove('', $filter));
-        $startDate = ! is_null($dateParts[0] ?? null) ?
-            Carbon::parse($dateParts[0])->startOfDay() :
-            now()->subDays(30)->startOfDay();
-
-        $endDate = ! is_null($dateParts[1] ?? null) ?
-            Carbon::parse($dateParts[1])->endOfDay() :
-            now()->endOfDay();
-
-        return (new Filter())
-            ->setFrom($startDate)
-            ->setTo($endDate)
-            ->setLimit($this->getLimit());
     }
 
     public function hasLimitedResults(): bool

@@ -176,5 +176,13 @@ return [
                 'language' => 'Languages',
             ],
         ],
+        'chart_pageviews' => [
+            'heading' => 'Pageviews (last 7 days)',
+            'dataset_label' => 'Pageviews',
+        ],
+        'chart_sessions' => [
+            'heading' => 'Sessions (last 7 days)',
+            'dataset_label' => 'Sessions',
+        ],
     ],
 ];

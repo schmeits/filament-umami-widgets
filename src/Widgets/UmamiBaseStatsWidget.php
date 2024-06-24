@@ -5,16 +5,15 @@ namespace Schmeits\FilamentUmami\Widgets;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Str;
-use Schmeits\FilamentUmami\Concerns\Filter;
 use Schmeits\FilamentUmami\Enums\UmamiStatsWidgets;
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
+use Schmeits\FilamentUmami\Traits\GetFilterForWidget;
 
 abstract class UmamiBaseStatsWidget extends BaseWidget
 {
+    use GetFilterForWidget;
     use InteractsWithPageFilters;
 
     protected int | string | array $columnSpan = 'full';
@@ -58,27 +57,5 @@ abstract class UmamiBaseStatsWidget extends BaseWidget
 
         return Stat::make($label, $value)
             ->description($description);
-    }
-
-    public function getFilter()
-    {
-        $filter = $this->filters['date_range'] ?? null;
-
-        if ($filter === null) {
-            $filter = now()->subDays(30)->format('Y-m-d') . ' - ' . now()->endOfDay()->format('Y-m-d');
-        }
-
-        $dateParts = explode(' - ', Str::remove('', $filter));
-        $startDate = ! is_null($dateParts[0] ?? null) ?
-            Carbon::parse($dateParts[0])->startOfDay() :
-            now()->subDays(30)->startOfDay();
-
-        $endDate = ! is_null($dateParts[1] ?? null) ?
-            Carbon::parse($dateParts[1])->endOfDay() :
-            now()->endOfDay();
-
-        return (new Filter())
-            ->setFrom($startDate)
-            ->setTo($endDate);
     }
 }

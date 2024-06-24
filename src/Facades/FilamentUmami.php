@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array metricsScreen(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
  * @method static array metricsEvent(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
  * @method static array metricsQuery(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
+ * @method static array pageViewsAndSessions()
  *
  * @see \Schmeits\FilamentUmami\FilamentUmami
  */

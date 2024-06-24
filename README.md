@@ -202,6 +202,10 @@ There are different predefined widgets available to use in your dashboard
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableGroupedGeo::class,
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetTableGroupedClientInfo::class,
 
+    // chart widgets
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphPageViews::class,
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphSessions::class,
+
 ])
 ```
 
@@ -268,6 +272,15 @@ There are different predefined widgets available to use in your dashboard
 #### Client Info (Browsers, OS, Devices, Screens, Languages)
 ![metrics-grouped-client-info.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-grouped-client-info.jpg)
 
+### Chart widgets
+
+#### Pageviews (last 7 days)
+![chart-pageviews.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/chart-pageviews.jpg)
+
+#### Sessions (last 7 days)
+![chart-sessions.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/chart-sessions.jpg)
+
+
 ### Configure the plugin
 
 If you want to configure the polling interval or define which widgets are shown in the UmamiWidgetStatsGrouped you can pass the StatWidgets to the `widgetsForGroupedStats` function:
@@ -327,6 +340,9 @@ $total_time = FilamentUmami::totalTime($filter);
 $pages = FilamentUmami::metricsPages($filter);
 // or
 $pages = FilamentUmami::metrics($filter, \Schmeits\FilamentUmami\Enums\UmamiMetricTypes::METRIC_PAGES);
+
+// *** PAGEVIEWS LAST 7 DAYS ***
+$views_and_sessions = FilamentUmami::pageViewsAndSessions(); 
 
 ```
 

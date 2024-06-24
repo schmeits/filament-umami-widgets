@@ -172,6 +172,11 @@ class FilamentUmami
         );
     }
 
+    public function pageViewsAndSessions(): array
+    {
+        return $this->client->getPageViewsAndSessions();
+    }
+
     protected function transformUmamiMetricResult(array $metrics, string $defaultEmptyValue = ''): array
     {
         return collect($metrics)

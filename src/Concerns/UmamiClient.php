@@ -84,6 +84,15 @@ class UmamiClient
         });
     }
 
+    public function getPageViewsAndSessions(): array
+    {
+        $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_PAGEVIEWS, new Filter());
+
+        return $this->getCachedValue('get-pageviews', function () use ($options) {
+            return $this->callWebsiteApi('pageviews', $options);
+        });
+    }
+
     public function getMetrics(Filter $filter, UmamiMetricTypes $type): array
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_METRICS, $filter);
