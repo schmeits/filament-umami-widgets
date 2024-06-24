@@ -30,16 +30,19 @@ class UmamiWidgetGraphSessions extends ChartWidget
     {
         $results = FilamentUmami::pageViewsAndSessions();
 
-        $pageviews = collect($results['sessions'] ?? [])->reverse();
+        $pageviews = collect($results['sessions'] ?? []);
 
         return [
             'datasets' => [
                 [
                     'label' => trans('filament-umami-widgets::translations.widget.chart_sessions.dataset_label'),
-                    'data' => $pageviews->pluck('y')->toArray(),
+                    'data' => $pageviews->values()->toArray(),
                 ],
             ],
-            'labels' => $pageviews->pluck('x')->map(fn ($item) => Carbon::make($item)->format('d-m-Y'))->toArray(),
+            'labels' => $pageviews
+                ->keys()
+                ->map(fn ($item) => Carbon::make($item)->format(trans('filament-umami-widgets::translations.widget.chart_sessions.date_format')))
+                ->toArray(),
         ];
     }
 

@@ -179,10 +179,12 @@ return [
         'chart_pageviews' => [
             'heading' => 'Pageviews (last 7 days)',
             'dataset_label' => 'Pageviews',
+            'date_format' => 'm-d-Y',
         ],
         'chart_sessions' => [
             'heading' => 'Sessions (last 7 days)',
             'dataset_label' => 'Sessions',
+            'date_format' => 'm-d-Y',
         ],
     ],
 ];

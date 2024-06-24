@@ -3,6 +3,7 @@
 namespace Schmeits\FilamentUmami;
 
 use Carbon\CarbonInterval;
+use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Support\Facades\Lang;
 use Schmeits\FilamentUmami\Concerns\Filter;
@@ -174,7 +175,16 @@ class FilamentUmami
 
     public function pageViewsAndSessions(): array
     {
-        return $this->client->getPageViewsAndSessions();
+        $result = $this->client->getPageViewsAndSessions();
+
+        return [
+            'pageviews' => collect(CarbonPeriod::create(now()->subDays(6), now())->toArray())
+                ->mapWithKeys(fn ($val) => [$val->format('Y-m-d') => 0])
+                ->merge(collect($result['pageviews'])->pluck('y', 'x')->toArray())->toArray(),
+            'sessions' => collect(CarbonPeriod::create(now()->subDays(6), now())->toArray())
+                ->mapWithKeys(fn ($val) => [$val->format('Y-m-d') => 0])
+                ->merge(collect($result['pageviews'])->pluck('y', 'x')->toArray())->toArray(),
+        ];
     }
 
     protected function transformUmamiMetricResult(array $metrics, string $defaultEmptyValue = ''): array
