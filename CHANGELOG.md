@@ -2,6 +2,10 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.3.1 - 2024-06-24
+
+Format date option added to graph widgets
+
 ## 1.3.0 - 2024-06-24
 
 Added Chart Widgets
