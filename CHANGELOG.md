@@ -2,6 +2,13 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.3.0 - 2024-06-24
+
+Added Chart Widgets
+
+- Pageviews (\Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphPageViews::class)
+- Sessions (\Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphSessions::class)
+
 ## 1.2.1 - 2024-06-21
 
 Forgot Widget use in WidgetManager
