@@ -2,29 +2,16 @@
 
 namespace Schmeits\FilamentUmami\Widgets;
 
-use Filament\Support\RawJs;
-use Filament\Widgets\ChartWidget;
-use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Carbon;
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
-use Schmeits\FilamentUmami\Traits\GetFilterForWidget;
 
-class UmamiWidgetGraphSessions extends ChartWidget
+class UmamiWidgetGraphSessions extends UmamiBaseChartWidget
 {
-    use GetFilterForWidget;
-    use InteractsWithPageFilters;
-
     protected static ?string $pollingInterval = null;
-
-    //protected static string $view = 'filament-umami-widgets::graph-widget';
 
     protected int | string | array $columnSpan = '1';
 
-    public function getHeading(): string | Htmlable | null
-    {
-        return trans('filament-umami-widgets::translations.widget.chart_sessions.heading');
-    }
+    protected string $id = 'chart_sessions';
 
     protected function getData(): array
     {
@@ -35,13 +22,13 @@ class UmamiWidgetGraphSessions extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => trans('filament-umami-widgets::translations.widget.chart_sessions.dataset_label'),
+                    'label' => trans("filament-umami-widgets::translations.widget.$this->id.dataset_label"),
                     'data' => $pageviews->values()->toArray(),
                 ],
             ],
             'labels' => $pageviews
                 ->keys()
-                ->map(fn ($item) => Carbon::make($item)->format(trans('filament-umami-widgets::translations.widget.chart_sessions.date_format')))
+                ->map(fn ($item) => Carbon::make($item)->format(trans('filament-umami-widgets::translations.widget.global.date_format')))
                 ->toArray(),
         ];
     }
@@ -49,26 +36,5 @@ class UmamiWidgetGraphSessions extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
-    }
-
-    protected function getOptions(): RawJs
-    {
-        return RawJs::make(<<<'JS'
-        {
-            plugins: {
-                legend : {
-                    display: false,
-                },
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 1,
-                    },
-                },
-            },
-        }
-    JS);
     }
 }
