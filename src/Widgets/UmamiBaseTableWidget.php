@@ -18,7 +18,7 @@ abstract class UmamiBaseTableWidget extends Widget
 
     protected static ?int $sort = -9;
 
-    protected ?string $heading = null;
+    protected ?string $heading = '';
 
     protected string $id = '';
 
@@ -71,13 +71,6 @@ abstract class UmamiBaseTableWidget extends Widget
             'label' => (Lang::has("filament-umami-widgets::translations.widget.$this->id.headers.count") ? trans("filament-umami-widgets::translations.widget.$this->id.headers.count") : trans('filament-umami-widgets::translations.widget.global.headers.count')),
             'width' => $width,
         ];
-    }
-
-    public function getDescription(): ?string
-    {
-        return (Lang::has("filament-umami-widgets::translations.widget.{$this->id}.description_prefix") ? trans("filament-umami-widgets::translations.widget.{$this->id}.description_prefix") : trans('filament-umami-widgets::translations.widget.global.description_prefix')) .
-            trans("filament-umami-widgets::translations.widget.{$this->id}.description") .
-            (Lang::has("filament-umami-widgets::translations.widget.{$this->id}.description_postfix") ? trans("filament-umami-widgets::translations.widget.{$this->id}.description_postfix") : trans('filament-umami-widgets::translations.widget.global.description_postfix'));
     }
 
     public function getData(): array
