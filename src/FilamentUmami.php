@@ -187,6 +187,23 @@ class FilamentUmami
         ];
     }
 
+    public function websiteEvents(Filter $filter): array
+    {
+        $events = collect($this->client->getWebsiteEvents($filter))
+            ->mapToGroups(function ($item) {
+                return [
+                    $item['t'] => [
+                        'type' => $item['x'],
+                        'count' => (int) $item['y'],
+                    ],
+                ];
+            });
+
+        return collect(CarbonPeriod::create($filter->from, $filter->to)->toArray())
+            ->mapWithKeys(fn ($val) => [$val->format('Y-m-d') => []])
+            ->merge($events)->toArray();
+    }
+
     protected function transformUmamiMetricResult(array $metrics, string $defaultEmptyValue = ''): array
     {
         return collect($metrics)

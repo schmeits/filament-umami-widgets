@@ -18,6 +18,7 @@ return [
             'description_prefix' => '',
             'limit' => 'top :count resultaten',
             'limit_show_all' => 'alle resultaten',
+            'date_format' => 'd-m-Y',
         ],
 
         /* STATISTIEKEN */
@@ -176,15 +177,22 @@ return [
                 'language' => 'Talen',
             ],
         ],
+
+        // CHARTS
         'chart_pageviews' => [
             'heading' => 'Pagina views (laatste 7 dagen)',
+            'description' => '',
             'dataset_label' => 'Pagina views',
-            'date_format' => 'd-m-Y',
         ],
         'chart_sessions' => [
             'heading' => 'Sessies (laatste 7 dagen)',
+            'description' => '',
             'dataset_label' => 'Sessies',
-            'date_format' => 'd-m-Y',
+        ],
+        'chart_events' => [
+            'heading' => 'Events',
+            'description' => '',
+            'dataset_label' => 'Events',
         ],
     ],
 ];

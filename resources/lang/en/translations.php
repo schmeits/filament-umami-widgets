@@ -18,6 +18,7 @@ return [
             'description_prefix' => '',
             'limit' => 'top :count results',
             'limit_show_all' => 'all results',
+            'date_format' => 'm-d-Y',
         ],
 
         /* STATS */
@@ -176,15 +177,22 @@ return [
                 'language' => 'Languages',
             ],
         ],
+
+        // CHARTS
         'chart_pageviews' => [
             'heading' => 'Pageviews (last 7 days)',
+            'description' => '',
             'dataset_label' => 'Pageviews',
-            'date_format' => 'm-d-Y',
         ],
         'chart_sessions' => [
             'heading' => 'Sessions (last 7 days)',
+            'description' => '',
             'dataset_label' => 'Sessions',
-            'date_format' => 'm-d-Y',
+        ],
+        'chart_events' => [
+            'heading' => 'Events',
+            'description' => '',
+            'dataset_label' => 'Events',
         ],
     ],
 ];

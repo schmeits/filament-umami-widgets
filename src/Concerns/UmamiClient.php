@@ -93,6 +93,15 @@ class UmamiClient
         });
     }
 
+    public function getWebsiteEvents(Filter $filter): array
+    {
+        $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_EVENTS, $filter);
+
+        return $this->getCachedValue('get-events-' . $filter->hash(), function () use ($options) {
+            return $this->callWebsiteApi('events', $options);
+        });
+    }
+
     public function getMetrics(Filter $filter, UmamiMetricTypes $type): array
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_METRICS, $filter);
@@ -196,14 +205,18 @@ class UmamiClient
     {
         $token = Cache::get('umami-token');
 
-        // check existing token
-        if ($token) {
-            $response = $this->http->withToken($token)->post('/auth/verify');
-            if ($response->ok()) {
-                $this->cacheToken($token);
+        try {
+            // check existing token
+            if ($token) {
+                $response = $this->http->withToken($token)->post('/auth/verify');
+                if ($response->ok()) {
+                    $this->cacheToken($token);
 
-                return $token;
+                    return $token;
+                }
             }
+        } catch (\Exception $exception) {
+            //
         }
 
         // no token, fetch it
