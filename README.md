@@ -205,7 +205,7 @@ There are different predefined widgets available to use in your dashboard
     // chart widgets
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphPageViews::class,
     \Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphSessions::class,
-
+    \Schmeits\FilamentUmami\Widgets\UmamiWidgetGraphEvents::class,
 ])
 ```
 
@@ -279,6 +279,9 @@ There are different predefined widgets available to use in your dashboard
 
 #### Sessions (last 7 days)
 ![chart-sessions.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/chart-sessions.jpg)
+
+#### Events
+![chart-events.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/chart-events.jpg)
 
 
 ### Configure the plugin
