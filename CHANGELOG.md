@@ -2,6 +2,20 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.4.0 - 2024-06-25
+
+New:
+
+- added websiteEvents Widget
+
+Bugfixes:
+
+- chartwidget headers disappearing
+
+Internals:
+
+- deduplication of code for abstract baseWidget classes
+
 ## 1.3.2 - 2024-06-24
 
 Fixed small bug in default filter
