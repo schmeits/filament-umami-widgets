@@ -32,7 +32,7 @@ return [
     | Umami Website ID
     |--------------------------------------------------------------------------
     |
-    | This is the ID of the website stats you want to show om the website
+    | This is the ID of the website stats you want to show on the website
     |
     | In Umami Cloud you can find the ID by going to Websites
     | Click edit and use the Website ID provided

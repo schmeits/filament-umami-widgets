@@ -68,7 +68,7 @@ return [
     | Umami Website ID
     |--------------------------------------------------------------------------
     |
-    | This is the ID of the website stats you want to show om the website
+    | This is the ID of the website stats you want to show on the website
     |
     | In Umami Cloud you can find the ID by going to Websites
     | Click edit and use the Website ID provided
@@ -273,7 +273,6 @@ There are different predefined widgets available to use in your dashboard
 ![metrics-grouped-client-info.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/metrics-grouped-client-info.jpg)
 
 ### Chart widgets
-
 #### Pageviews (last 7 days)
 ![chart-pageviews.jpg](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/chart-pageviews.jpg)
 
@@ -302,7 +301,7 @@ If you want to configure the polling interval or define which widgets are shown 
 ```
 
 ## Using the raw Analytics functions
-You can alse use the facade functions for your own widgets.
+You can also use the facade functions for your own widgets.
 
 ### Defining the Filter
 ```php
@@ -392,7 +391,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## Credits
 
 - [Tally Schmeits](https://github.com/schmeits)
-- Inspired on the [Pirsch Widget by Devlogx](https://github.com/devlogx/filament-pirsch-dashboard-widget) 
+- Inspired on the [Pirsch Widget by Devlogx](https://github.com/devlogx/filament-pirsch-dashboard-widget)
+- Inspired on the laravel package [Laravel Umami](https://github.com/still-code/laravel-umami)
 - [All Contributors](../../contributors)
 
 ## License
