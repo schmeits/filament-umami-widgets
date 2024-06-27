@@ -2,6 +2,10 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.4.2 - 2024-06-27
+
+Typo squashing and adding inspiration
+
 ## 1.4.1 - 2024-06-27
 
 Fixed bug in BaseTableWidget
