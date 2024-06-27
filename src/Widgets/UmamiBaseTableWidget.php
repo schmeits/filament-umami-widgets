@@ -8,10 +8,12 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Lang;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
 use Schmeits\FilamentUmami\Traits\GetFilterForWidget;
+use Schmeits\FilamentUmami\Traits\HasDescription;
 
 abstract class UmamiBaseTableWidget extends Widget
 {
     use GetFilterForWidget;
+    use HasDescription;
     use InteractsWithPageFilters;
 
     protected int | string | array $columnSpan = 'full';
