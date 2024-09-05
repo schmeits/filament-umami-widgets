@@ -32,7 +32,7 @@ class UmamiClient
         $this->baseUrl = str(config('filament-umami-widgets.api_endpoint_url'))->rtrim('/');
 
         // minimum timout must be larger than 1 second
-        $timeout = min(intval(config('filament-umami-widgets.timeout', 5)), 1);
+        $timeout = max(intval(config('filament-umami-widgets.timeout', 5)), 1);
 
         $this->http = Http::baseUrl($this->baseUrl)->timeout($timeout);
 
