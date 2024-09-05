@@ -19,7 +19,7 @@ class FilamentUmami
      */
     public function __construct()
     {
-        $this->client = new UmamiClient();
+        $this->client = new UmamiClient;
     }
 
     public function getClient(): UmamiClient

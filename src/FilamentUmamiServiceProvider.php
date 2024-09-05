@@ -45,7 +45,7 @@ class FilamentUmamiServiceProvider extends PackageServiceProvider
         WidgetManager::make()->boot();
 
         // Testing
-        Testable::mixin(new TestsFilamentUmami());
+        Testable::mixin(new TestsFilamentUmami);
     }
 
     protected function getAssetPackageName(): ?string

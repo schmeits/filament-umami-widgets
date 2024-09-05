@@ -39,7 +39,7 @@ trait GetFilterForWidget
             Carbon::parse($dateParts[1])->endOfDay() :
             now()->endOfDay();
 
-        return (new Filter())
+        return (new Filter)
             ->setFrom($startDate)
             ->setTo($endDate)
             ->setLimit($this->getLimit());
