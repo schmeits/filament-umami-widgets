@@ -10,6 +10,8 @@ class UmamiWidgetTableGroupedGeo extends UmamiBaseTableWidget
 
     public string $id = 'metrics_geo';
 
+    protected bool $limitResults = true;
+
     public function getOptions(): array
     {
         return [
