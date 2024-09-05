@@ -2,6 +2,11 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.4.3 - 2024-09-05
+
+Bug: Ofcourse we have to use the max value getting the timeout :)  (noticed by Lmtc 🙏🏻)
+Fixed: Add limitResults to the Grouped Geo Table
+
 ## 1.4.2 - 2024-06-27
 
 Typo squashing and adding inspiration
