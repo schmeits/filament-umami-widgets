@@ -22,7 +22,7 @@
     "require": {
         "php": "^8.1|^8.2|^8.3",
         "filament/filament": "^3.0",
-        "malzariey/filament-daterangepicker-filter": "^2.6",
+        "malzariey/filament-daterangepicker-filter": "^3.2",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
