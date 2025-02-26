@@ -2,6 +2,10 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
+## 1.4.4 - 2025-02-26
+
+Bump filament-daterangepicker-filter version to add support for laravel 12 (thanks to @atmonshi)
+
 ## 1.4.3 - 2024-09-05
 
 Bug: Ofcourse we have to use the max value getting the timeout :)  (noticed by Lmtc 🙏🏻)
