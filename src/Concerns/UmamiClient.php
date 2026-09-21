@@ -51,11 +51,17 @@ class UmamiClient
 
         } elseif ($this->type === UmamiType::TYPE_CLOUD) {
 
-            $this->api_key = config('filament-umami-widgets.cloud_api_key');
+            // Read first, then check, then assign. The property is typed as
+            // string, so a missing api key used to throw a TypeError here
+            // ("Cannot assign null to property ... of type string") instead of
+            // the intended, readable error message.
+            $apiKey = config('filament-umami-widgets.cloud_api_key');
 
-            if (empty($this->api_key)) {
+            if (empty($apiKey)) {
                 throw new \Exception('Umami api_key is required.');
             }
+
+            $this->api_key = $apiKey;
 
             $this->http->withHeader('x-umami-api-key', $this->api_key);
 
