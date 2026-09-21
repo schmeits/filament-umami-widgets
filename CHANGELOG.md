@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-21 - CI fix: add guzzlehttp/guzzle to require-dev
+
+- Added `guzzlehttp/guzzle` to `require-dev` so Laravel's `Http::fake()` / `Http::response()` can resolve `GuzzleHttp\Psr7\Response` on every CI matrix combination. On Laravel 10 (testbench 8) with lower PHP versions Guzzle was not pulled in transitively, which made the `run-tests` workflow fail with "Class GuzzleHttp\Psr7\Response not found".
+
 ## 2026-02-04 10:44 - Composer Security Update (Automated)
 
 - Security vulnerabilities opgelost via composer update --with-all-dependencies
