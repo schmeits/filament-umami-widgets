@@ -4,11 +4,12 @@ namespace Schmeits\FilamentUmami\Concerns;
 
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 
 trait HasFilter
 {
-    use \Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+    use HasFiltersForm;
 
     public function filtersForm(Form $form): Form
     {
