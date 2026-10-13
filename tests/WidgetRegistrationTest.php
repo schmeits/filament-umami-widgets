@@ -6,12 +6,12 @@
  * WHY: WidgetManager::boot() registers every widget as a Livewire component. If
  * that goes wrong, the user gets no error but an empty dashboard, or an "Unable
  * to find component" the moment they open the page. This is also the part that
- * breaks first on a Livewire or Filament upgrade, because it relies on
- * ComponentRegistry, an internal Livewire class.
+ * breaks first on a Livewire or Filament upgrade: Livewire 3 names components
+ * through ComponentRegistry, Livewire 4 dropped that class.
  */
 
 use Filament\Widgets\Widget;
-use Livewire\Mechanisms\ComponentRegistry;
+use Livewire\Livewire;
 use Schmeits\FilamentUmami\WidgetManager;
 
 // umamiWidgetClasses() lives in tests/Pest.php, so every test file can use it as
@@ -44,18 +44,18 @@ it('is instantiable without arguments', function (string $widget) {
 })->with(umamiWidgetClasses());
 
 it('is registered as a Livewire component', function (string $widget) {
-    // The heart of packageBooted(). Via the name ComponentRegistry generates
-    // itself, so a changed naming scheme in Livewire shows up right away.
-    $name = app(ComponentRegistry::class)->getName($widget);
+    // The heart of packageBooted(). Resolve the widget through Livewire by the
+    // name it was registered under, so a changed naming scheme shows up right away.
+    $name = WidgetManager::make()->getLivewireComponentName($widget);
 
-    expect(app(ComponentRegistry::class)->getClass($name))->toBe($widget);
+    expect(Livewire::new($name))->toBeInstanceOf($widget);
 })->with(umamiWidgetClasses());
 
 it('uses unique Livewire component names', function () {
     // Two widgets with the same name means one is silently overwritten during
     // registration.
     $names = array_map(
-        fn (string $widget): string => app(ComponentRegistry::class)->getName($widget),
+        fn (string $widget): string => WidgetManager::make()->getLivewireComponentName($widget),
         umamiWidgetClasses(),
     );
 

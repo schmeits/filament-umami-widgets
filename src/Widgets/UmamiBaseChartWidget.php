@@ -5,6 +5,7 @@ namespace Schmeits\FilamentUmami\Widgets;
 use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Illuminate\Contracts\Support\Htmlable;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
 use Schmeits\FilamentUmami\Traits\GetFilterForWidget;
 use Schmeits\FilamentUmami\Traits\HasDescription;
@@ -21,11 +22,9 @@ abstract class UmamiBaseChartWidget extends ChartWidget
 
     protected string $id = '';
 
-    protected static ?string $heading = '';
-
-    public function __construct()
+    public function getHeading(): string | Htmlable | null
     {
-        self::$heading = trans("filament-umami-widgets::translations.widget.$this->id.heading");
+        return trans("filament-umami-widgets::translations.widget.$this->id.heading");
     }
 
     public function getPollingInterval(): ?string

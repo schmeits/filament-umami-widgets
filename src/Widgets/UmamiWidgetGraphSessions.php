@@ -7,7 +7,7 @@ use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
 class UmamiWidgetGraphSessions extends UmamiBaseChartWidget
 {
-    protected static ?string $pollingInterval = null;
+    protected ?string $pollingInterval = null;
 
     protected int | string | array $columnSpan = '1';
 

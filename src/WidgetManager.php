@@ -7,7 +7,6 @@ namespace Schmeits\FilamentUmami;
 use Filament\Widgets\Widget;
 use Filament\Widgets\WidgetConfiguration;
 use Livewire\Livewire;
-use Livewire\Mechanisms\ComponentRegistry;
 
 class WidgetManager
 {
@@ -83,8 +82,24 @@ class WidgetManager
 
     protected function queueLivewireComponentForRegistration(string $component): void
     {
-        $componentName = app(ComponentRegistry::class)->getName($component);
+        $this->livewireComponents[$this->getLivewireComponentName($component)] = $component;
+    }
 
-        $this->livewireComponents[$componentName] = $component;
+    /**
+     * The name a widget is registered under, the same way Filament registers its
+     * own widgets: via ComponentRegistry on Livewire 3 (Filament 4), and by class
+     * name on Livewire 4 (Filament 5), which no longer has ComponentRegistry.
+     *
+     * @param  class-string  $component
+     */
+    public function getLivewireComponentName(string $component): string
+    {
+        $registry = 'Livewire\Mechanisms\ComponentRegistry';
+
+        if (class_exists($registry)) {
+            return app($registry)->getName($component);
+        }
+
+        return $component;
     }
 }

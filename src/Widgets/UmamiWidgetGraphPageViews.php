@@ -7,7 +7,7 @@ use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
 class UmamiWidgetGraphPageViews extends UmamiBaseChartWidget
 {
-    protected static string $color = 'info';
+    protected string $color = 'info';
 
     protected int | string | array $columnSpan = '1';
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0 - unreleased
+
+Support for Filament 4 and 5, and with that Laravel 13.
+
+- Requires Filament 4 or 5, Laravel 11.28 or higher and PHP 8.2 or higher. The Filament 3 version stays available as 1.x on the `3.x` branch.
+- `malzariey/filament-daterangepicker-filter` raised to `^4.0.7|^5.0`.
+- The date filter uses the Filament 4 schema API (`filtersForm(Schema $schema)`), and widgets read `$pageFilters`.
+- The table widget view now uses only Filament's own `fi-ta-*` classes and components, because Filament 4 no longer ships arbitrary Tailwind classes. The widget description moved from below the table to under the heading.
+- Widgets are registered the same way Filament does: through ComponentRegistry on Livewire 3, by class name on Livewire 4.
+- CI tests PHP 8.2 to 8.5 against Laravel 11, 12 and 13 with Filament 4 and 5. PHPStan runs again (Larastan was missing from require-dev).
+
 ## 2026-09-21 - CI fix: add guzzlehttp/guzzle to require-dev
 
 - Added `guzzlehttp/guzzle` to `require-dev` so Laravel's `Http::fake()` / `Http::response()` can resolve `GuzzleHttp\Psr7\Response` on every CI matrix combination. On Laravel 10 (testbench 8) with lower PHP versions Guzzle was not pulled in transitively, which made the `run-tests` workflow fail with "Class GuzzleHttp\Psr7\Response not found".

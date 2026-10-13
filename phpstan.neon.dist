@@ -1,4 +1,5 @@
 includes:
+    - vendor/larastan/larastan/extension.neon
     - phpstan-baseline.neon
 
 parameters:
@@ -6,6 +7,19 @@ parameters:
     paths:
         - src
         - config
+        # Uses the HasFilter trait, so PHPStan analyses it.
+        - tests/Fixtures/UmamiDashboard.php
     tmpDir: build/phpstan
     checkModelProperties: true
     ignoreErrors:
+        # A package config file is merged into the app config, so env() is the
+        # intended way to read values there.
+        -
+            identifier: larastan.noEnvCallsOutsideOfConfig
+            path: config/*
+        # The view namespace is registered by FilamentUmamiServiceProvider, which
+        # Larastan does not boot, so it cannot resolve this view-string.
+        -
+            identifier: property.defaultValue
+            path: src/Widgets/UmamiBaseTableWidget.php
+            reportUnmatched: false
