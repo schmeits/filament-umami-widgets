@@ -26,7 +26,10 @@ abstract class UmamiBaseTableWidget extends Widget
 
     protected bool $limitResults = false;
 
-    protected static string $view = 'filament-umami-widgets::table-widget';
+    /**
+     * @var view-string
+     */
+    protected string $view = 'filament-umami-widgets::table-widget';
 
     public ?string $option = null;
 

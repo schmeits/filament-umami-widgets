@@ -94,6 +94,14 @@ it('renders a chart widget', function () {
     Livewire::test(UmamiWidgetGraphPageViews::class)->assertOk();
 });
 
+it('shows the heading of a chart widget', function () {
+    // The heading comes from the translations via getHeading(). Filament 3 kept
+    // it in a static property, Filament 4 and 5 in an instance property, so this
+    // breaks silently when that changes again.
+    Livewire::test(UmamiWidgetGraphPageViews::class)
+        ->assertSee(trans('filament-umami-widgets::translations.widget.chart_pageviews.heading'));
+});
+
 it('renders the query widget that puts array values in the table', function () {
     // The query widget returns an array per row instead of a string. The view
     // has a separate path for that using x-filament::badge. No other widget hits

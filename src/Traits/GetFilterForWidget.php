@@ -3,7 +3,6 @@
 namespace Schmeits\FilamentUmami\Traits;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Schmeits\FilamentUmami\Concerns\Filter;
 
 trait GetFilterForWidget
@@ -24,20 +23,16 @@ trait GetFilterForWidget
 
     public function getFilter()
     {
-        $filter = $this->filters['date_range'] ?? null;
+        $filter = $this->pageFilters['date_range'] ?? null;
 
         if ($filter === null) {
             $filter = now()->subDays(30)->format('Y-m-d') . ' - ' . now()->endOfDay()->format('Y-m-d');
         }
 
-        $dateParts = explode(' - ', Str::remove('', $filter));
-        $startDate = ! is_null($dateParts[0] ?? null) ?
-            Carbon::parse($dateParts[0])->startOfDay() :
-            now()->subDays(30)->startOfDay();
+        [$start, $end] = array_pad(explode(' - ', $filter, 2), 2, null);
 
-        $endDate = ! is_null($dateParts[1] ?? null) ?
-            Carbon::parse($dateParts[1])->endOfDay() :
-            now()->endOfDay();
+        $startDate = filled($start) ? Carbon::parse($start)->startOfDay() : now()->subDays(30)->startOfDay();
+        $endDate = filled($end) ? Carbon::parse($end)->endOfDay() : now()->endOfDay();
 
         return (new Filter)
             ->setFrom($startDate)

@@ -9,6 +9,13 @@ These are some Filament widgets for [Umami](https://umami.is/) (Website Analytic
 
 ![example-screenshot.png](https://github.com/schmeits/filament-umami-widgets/raw/main/docs-assets/screenshots/example-screenshot.png)
 
+## Compatibility
+
+| Package version | Filament | Laravel | PHP |
+|---|---|---|---|
+| 2.x | 4.x and 5.x | 11.28+, 12 and 13 | 8.2+ (Laravel 13 needs 8.3+) |
+| 1.x (branch `3.x`) | 3.x | 10, 11 and 12 | 8.1+ |
+
 ## Installation
 
 You can install the package via composer:
@@ -28,6 +35,14 @@ Optionally, you can publish the views
 ```bash
 php artisan vendor:publish --tag="filament-umami-widgets-views"
 ```
+
+### Upgrading from 1.x (Filament 3)
+
+- Version 2 needs Filament 4 or 5. Stay on `^1.4` as long as you run Filament 3.
+- Views published from 1.x no longer match: republish them with `--force`, or delete them so the package view is used.
+- `HasFilter::filtersForm()` now takes and returns a `Filament\Schemas\Schema` instead of a `Filament\Forms\Form`. This only matters if you override it.
+- Widgets read the date range from `$this->pageFilters` (Filament 4 and 5) instead of `$this->filters`.
+- If you extend a chart widget: `$heading` and `$color` are no longer static, following Filament 4.
 or translations 
 ```bash
 php artisan vendor:publish --tag="filament-umami-widgets-translations"

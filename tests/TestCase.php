@@ -9,11 +9,13 @@ use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
+use Malzariey\FilamentDaterangepickerFilter\FilamentDaterangepickerFilterServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use Schmeits\FilamentUmami\FilamentUmamiServiceProvider;
@@ -49,9 +51,11 @@ class TestCase extends Orchestra
             FormsServiceProvider::class,
             InfolistsServiceProvider::class,
             NotificationsServiceProvider::class,
+            SchemasServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
             LivewireServiceProvider::class,
+            FilamentDaterangepickerFilterServiceProvider::class,
             FilamentUmamiServiceProvider::class,
             // Panel with the plugin registered, so widgets can be rendered.
             TestPanelProvider::class,

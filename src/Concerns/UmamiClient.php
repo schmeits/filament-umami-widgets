@@ -11,7 +11,7 @@ use Schmeits\FilamentUmami\Enums\UmamiWebsiteStats;
 
 class UmamiClient
 {
-    private PendingRequest | Http $http;
+    private PendingRequest $http;
 
     private UmamiType $type;
 

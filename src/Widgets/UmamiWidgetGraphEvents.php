@@ -8,7 +8,7 @@ use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
 class UmamiWidgetGraphEvents extends UmamiBaseChartWidget
 {
-    protected static string $color = 'success';
+    protected string $color = 'success';
 
     protected int | string | array $columnSpan = '1';
 
