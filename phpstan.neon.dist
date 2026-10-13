@@ -3,12 +3,11 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: max
     paths:
         - src
         - config
-        # Uses the HasFilter trait, so PHPStan analyses it.
-        - tests/Fixtures/UmamiDashboard.php
+        - tests/Fixtures
     tmpDir: build/phpstan
     checkModelProperties: true
     ignoreErrors:

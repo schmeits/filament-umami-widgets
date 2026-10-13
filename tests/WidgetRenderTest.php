@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
+ * tests/WidgetRenderTest.php
+ *
  * Smoke tests that actually render every widget.
  *
  * WHY: the widgets are thin shells around Filament's StatsOverviewWidget,

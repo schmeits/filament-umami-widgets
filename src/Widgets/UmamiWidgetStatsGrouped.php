@@ -1,8 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetStatsGrouped.php
+ *
+ * Stats widget that shows several Umami numbers side by side. Which numbers is
+ * set on the plugin with widgetsForGroupedStats().
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
-use Schmeits\FilamentUmami\Enums\UmamiStatsWidgets;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Schmeits\FilamentUmami\FilamentUmamiPlugin;
 
 class UmamiWidgetStatsGrouped extends UmamiBaseStatsWidget
@@ -24,14 +33,19 @@ class UmamiWidgetStatsGrouped extends UmamiBaseStatsWidget
         return 4;
     }
 
+    /**
+     * @return list<Stat>
+     */
     protected function getStats(): array
     {
-        $widgets = FilamentUmamiPlugin::get()->getWidgets();
+        $plugin = FilamentUmamiPlugin::current() ?? FilamentUmamiPlugin::make();
 
-        return collect($widgets)->map(function ($widget) {
-            if ($widget instanceof UmamiStatsWidgets) {
-                return $this->createStat($widget);
-            }
-        })->toArray();
+        $stats = [];
+
+        foreach ($plugin->getWidgets() as $widget) {
+            $stats[] = $this->createStat($widget);
+        }
+
+        return $stats;
     }
 }

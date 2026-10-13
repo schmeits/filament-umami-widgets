@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * tests/Pest.php
+ *
+ * Pest bootstrap and shared test helpers.
+ */
+
 use Schmeits\FilamentUmami\Tests\TestCase;
 use Schmeits\FilamentUmami\WidgetManager;
 

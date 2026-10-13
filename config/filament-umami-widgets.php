@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * config/filament-umami-widgets.php
+ *
+ * Package configuration: Umami type, endpoint, website id, credentials,
+ * timeout and cache time.
+ */
+
 return [
     /*
     |--------------------------------------------------------------------------

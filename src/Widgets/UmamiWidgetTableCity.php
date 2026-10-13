@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetTableCity.php
+ *
+ * Table widget with the Umami city metrics.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
@@ -10,6 +18,9 @@ class UmamiWidgetTableCity extends UmamiBaseTableWidget
 
     public string $id = 'metrics_city';
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getHeaders(): array
     {
         return [
@@ -23,6 +34,9 @@ class UmamiWidgetTableCity extends UmamiBaseTableWidget
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getData(): array
     {
         return FilamentUmami::metricsCity($this->getFilter());

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetTableRegion.php
+ *
+ * Table widget with the Umami region metrics.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
@@ -10,6 +18,9 @@ class UmamiWidgetTableRegion extends UmamiBaseTableWidget
 
     public string $id = 'metrics_region';
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getHeaders(): array
     {
         return [
@@ -23,6 +34,9 @@ class UmamiWidgetTableRegion extends UmamiBaseTableWidget
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getData(): array
     {
         return FilamentUmami::metricsRegion($this->getFilter());

@@ -42,8 +42,8 @@
                     @if ($this->hasLimitedResults() || $hasOptions)
                         <div class="fi-ta-actions">
                             @if ($this->hasLimitedResults())
-                                <label for="{{ $this->getId() }}-limit" class="sr-only">
-                                    Limit
+                                <label for="{{ $this->getId() }}-limit" class="fi-sr-only">
+                                    {{ trans('filament-umami-widgets::translations.widget.global.limit_label') }}
                                 </label>
                                 <x-filament::input.wrapper>
                                     <x-filament::input.select id="{{ $this->getId() }}-limit" wire:model.live="limit">
@@ -56,8 +56,8 @@
                             @endif
 
                             @if ($hasOptions)
-                                <label for="{{ $this->getId() }}-option" class="sr-only">
-                                    Select
+                                <label for="{{ $this->getId() }}-option" class="fi-sr-only">
+                                    {{ trans('filament-umami-widgets::translations.widget.global.option_label') }}
                                 </label>
                                 <x-filament::input.wrapper>
                                     <x-filament::input.select id="{{ $this->getId() }}-option" wire:model.live="option">

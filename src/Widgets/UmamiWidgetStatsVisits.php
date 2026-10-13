@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetStatsVisits.php
+ *
+ * Stats widget with the Umami visits number.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Enums\UmamiStatsWidgets;

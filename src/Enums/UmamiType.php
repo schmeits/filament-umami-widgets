@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Enums/UmamiType.php
+ *
+ * Self-hosted or cloud Umami.
+ */
+
 namespace Schmeits\FilamentUmami\Enums;
 
 enum UmamiType: string

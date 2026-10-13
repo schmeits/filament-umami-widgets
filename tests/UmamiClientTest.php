@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
+ * tests/UmamiClientTest.php
+ *
  * Smoke tests for the HTTP client and the mapping to widget values.
  *
  * WHY: the client builds up the Umami API calls and reads the response. If

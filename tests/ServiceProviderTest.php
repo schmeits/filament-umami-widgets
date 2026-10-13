@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
+ * tests/ServiceProviderTest.php
+ *
  * Smoke tests for the service provider, the config, the views and the translations.
  *
  * WHY: this package is loaded via package discovery in every Filament app. The

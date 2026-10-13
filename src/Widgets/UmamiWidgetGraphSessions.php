@@ -1,8 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetGraphSessions.php
+ *
+ * Chart widget with the Umami sessions per day.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
-use Illuminate\Support\Carbon;
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
 class UmamiWidgetGraphSessions extends UmamiBaseChartWidget
@@ -13,23 +20,21 @@ class UmamiWidgetGraphSessions extends UmamiBaseChartWidget
 
     protected string $id = 'chart_sessions';
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getData(): array
     {
-        $results = FilamentUmami::pageViewsAndSessions();
-
-        $pageviews = collect($results['sessions'] ?? []);
+        $days = FilamentUmami::pageViewsAndSessions()['sessions'];
 
         return [
             'datasets' => [
                 [
                     'label' => trans("filament-umami-widgets::translations.widget.$this->id.dataset_label"),
-                    'data' => $pageviews->values()->toArray(),
+                    'data' => array_values($days),
                 ],
             ],
-            'labels' => $pageviews
-                ->keys()
-                ->map(fn ($item) => Carbon::make($item)->format(trans('filament-umami-widgets::translations.widget.global.date_format')))
-                ->toArray(),
+            'labels' => $this->dayLabels($days),
         ];
     }
 

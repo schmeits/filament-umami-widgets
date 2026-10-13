@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetTableGroupedClientInfo.php
+ *
+ * Table widget with Umami metrics grouped by client info, switchable with a
+ * select.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
@@ -12,6 +21,9 @@ class UmamiWidgetTableGroupedClientInfo extends UmamiBaseTableWidget
 
     protected bool $limitResults = true;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [
@@ -23,19 +35,25 @@ class UmamiWidgetTableGroupedClientInfo extends UmamiBaseTableWidget
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getHeaders(): array
     {
-        $headers = collect();
+        $headers = [];
 
         $metric = $this->getDefaultMetricHeaderItem('60%');
         $metric['label'] = trans("filament-umami-widgets::translations.widget.metrics_$this->option.headers.metric");
-        $headers->push($metric);
+        $headers[] = $metric;
 
-        $headers->push($this->getDefaultCountHeaderItem());
+        $headers[] = $this->getDefaultCountHeaderItem();
 
-        return $headers->toArray();
+        return $headers;
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getData(): array
     {
         $metricsFunction = match ($this->option) {

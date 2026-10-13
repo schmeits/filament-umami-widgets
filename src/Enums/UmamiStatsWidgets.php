@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Enums/UmamiStatsWidgets.php
+ *
+ * The numbers a stats widget can show.
+ */
+
 namespace Schmeits\FilamentUmami\Enums;
 
 enum UmamiStatsWidgets: string implements UmamiWidget
