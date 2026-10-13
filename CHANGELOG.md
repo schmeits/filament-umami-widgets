@@ -1,5 +1,39 @@
 # Changelog
 
+All notable changes to `filament-umami-widgets` will be documented in this file.
+
+## 2.1.0 - unreleased
+
+Robustness, accessibility and maintenance. No changes needed in your code.
+
+### Fixed
+
+- The sessions chart showed page views instead of sessions.
+- The events chart dropped a day from a dataset when that day only had other events, so the bars moved one day. Every dataset now has a value for every day.
+- Days are normalised to `Y-m-d`, whatever date format Umami returns. A day no longer appears twice.
+- A slow or unreachable Umami, a non-JSON response or a missing key no longer breaks a widget. The widget shows empty values and a failed call is not cached, so it recovers as soon as Umami is back.
+- A self-hosted Umami that is down during login no longer breaks the dashboard. Wrong credentials still raise a clear error.
+- Apps that use immutable dates (`Date::useClass(CarbonImmutable::class)`) no longer get a TypeError.
+- A widget on a panel without the plugin uses the default polling interval instead of throwing.
+- A date range, row limit or table option sent by the browser that is not valid falls back to the default.
+- Cache keys (including the login token) are scoped per Umami server and website, so apps sharing a cache store no longer see each other's data.
+- The hidden labels of the table selects used `sr-only`, which Filament 4 and 5 do not ship, so they rendered as visible text. They now use `fi-sr-only` and are translated. If you published the views, publish them again.
+
+### Changed
+
+- Event colours use the colour-blind safe Okabe-Ito palette. The legend stays visible, so the event name is always readable as text.
+- Laravel 11 is no longer tested: Composer blocks its releases because of open security advisories. Supported are Laravel 12 and 13.
+- New `FilamentUmamiPlugin::current()`, which returns null instead of throwing when the plugin is not on the current panel.
+
+### Maintenance
+
+- `declare(strict_types=1)` in every PHP file, enforced by an architecture test.
+- PHPStan runs at level max on `src` and `config` without a baseline.
+- 18 new tests for the failure paths above.
+- Removed the unused npm toolchain, the empty testing mixin and other skeleton leftovers. The Composer package no longer contains screenshots or development files.
+- Dependabot: Composer added, updates grouped, 3 day cooldown.
+- The changelog workflow uses the default branch instead of a hard-coded `main`.
+
 ## 2.0.0 - 2026-10-13
 
 Support for Filament 4 and 5, and with that Laravel 13.
@@ -21,8 +55,6 @@ Support for Filament 4 and 5, and with that Laravel 13.
 - Run composer show --locked voor volledige package lijst
 - Composer audit: Geen openstaande kwetsbaarheden meer
 
-
-All notable changes to `filament-umami-widgets` will be documented in this file.
 
 ## 1.4.4 - 2025-02-26
 

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * resources/lang/nl/translations.php
+ *
+ * Dutch translations for the widgets and the date filter.
+ */
+
 return [
     'filter' => [
         'title' => 'Datumfilter voor Umami',
@@ -18,6 +26,8 @@ return [
             'description_prefix' => '',
             'limit' => 'top :count resultaten',
             'limit_show_all' => 'alle resultaten',
+            'limit_label' => 'Aantal rijen',
+            'option_label' => 'Toon',
             'date_format' => 'd-m-Y',
         ],
 

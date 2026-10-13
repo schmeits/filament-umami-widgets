@@ -18,12 +18,10 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [13.*, 12.*, 11.*]
+        laravel: [13.*, 12.*]
         filament: [5.*, 4.*]
         stability: [prefer-stable]
         include:
-          - laravel: 11.*
-            testbench: 9.*
           - laravel: 12.*
             testbench: 10.*
           - laravel: 13.*
@@ -32,15 +30,12 @@ jobs:
           # Laravel 13 needs PHP 8.3 or higher.
           - laravel: 13.*
             php: 8.2
-          # Laravel 11 does not support PHP 8.5.
-          - laravel: 11.*
-            php: 8.5
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - F${{ matrix.filament }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup PHP
         uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2

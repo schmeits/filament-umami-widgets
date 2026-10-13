@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetTableGroupedPages.php
+ *
+ * Table widget with Umami metrics grouped by pages, switchable with a select.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
@@ -12,6 +20,9 @@ class UmamiWidgetTableGroupedPages extends UmamiBaseTableWidget
 
     protected bool $limitResults = true;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [
@@ -20,21 +31,27 @@ class UmamiWidgetTableGroupedPages extends UmamiBaseTableWidget
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getHeaders(): array
     {
-        $headers = collect();
+        $headers = [];
 
-        $headers->push([
+        $headers[] = [
             'name' => 'metric',
             'label' => trans("filament-umami-widgets::translations.widget.metrics_$this->option.headers.metric"),
             'width' => '90%',
-        ]);
+        ];
 
-        $headers->push($this->getDefaultCountHeaderItem());
+        $headers[] = $this->getDefaultCountHeaderItem();
 
-        return $headers->toArray();
+        return $headers;
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getData(): array
     {
         $metricsFunction = match ($this->option) {

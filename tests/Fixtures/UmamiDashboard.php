@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * tests/Fixtures/UmamiDashboard.php
+ *
+ * Dashboard page with the date filter, used by the filter tests.
+ */
+
 namespace Schmeits\FilamentUmami\Tests\Fixtures;
 
 use Filament\Pages\Dashboard;

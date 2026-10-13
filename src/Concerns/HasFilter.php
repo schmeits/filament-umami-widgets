@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Concerns/HasFilter.php
+ *
+ * Dashboard trait that adds the date range filter the Umami widgets read.
+ */
+
 namespace Schmeits\FilamentUmami\Concerns;
 
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;

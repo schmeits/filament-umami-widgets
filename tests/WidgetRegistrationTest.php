@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
+ * tests/WidgetRegistrationTest.php
+ *
  * Smoke tests for widget registration.
  *
  * WHY: WidgetManager::boot() registers every widget as a Livewire component. If

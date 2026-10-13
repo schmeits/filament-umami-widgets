@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetTableGroupedGeo.php
+ *
+ * Table widget with Umami metrics grouped by geo, switchable with a select.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
@@ -12,6 +20,9 @@ class UmamiWidgetTableGroupedGeo extends UmamiBaseTableWidget
 
     protected bool $limitResults = true;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [
@@ -21,29 +32,35 @@ class UmamiWidgetTableGroupedGeo extends UmamiBaseTableWidget
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getHeaders(): array
     {
-        $headers = collect();
+        $headers = [];
 
-        $headers->push([
+        $headers[] = [
             'name' => 'metric',
             'label' => trans("filament-umami-widgets::translations.widget.metrics_$this->option.headers.metric"),
             'width' => $this->option === 'country' ? '90%' : '60%',
-        ]);
+        ];
 
         if ($this->option !== 'country') {
-            $headers->push([
+            $headers[] = [
                 'name' => 'country',
                 'label' => trans("filament-umami-widgets::translations.widget.metrics_$this->option.headers.country"),
                 'width' => '30%',
-            ]);
+            ];
         }
 
-        $headers->push($this->getDefaultCountHeaderItem());
+        $headers[] = $this->getDefaultCountHeaderItem();
 
-        return $headers->toArray();
+        return $headers;
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getData(): array
     {
         $metricsFunction = match ($this->option) {

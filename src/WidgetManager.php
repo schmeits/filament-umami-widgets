@@ -7,6 +7,7 @@ namespace Schmeits\FilamentUmami;
 use Filament\Widgets\Widget;
 use Filament\Widgets\WidgetConfiguration;
 use Livewire\Livewire;
+use LogicException;
 
 class WidgetManager
 {
@@ -15,6 +16,9 @@ class WidgetManager
      */
     protected array $livewireComponents = [];
 
+    /**
+     * @var list<class-string<Widget>>
+     */
     protected array $widgets = [
         Widgets\UmamiWidgetStatsBounces::class,
         Widgets\UmamiWidgetStatsGrouped::class,
@@ -46,7 +50,13 @@ class WidgetManager
 
     public static function make(): static
     {
-        return app(static::class);
+        $manager = app(static::class);
+
+        if (! $manager instanceof static) {
+            throw new LogicException('The container did not return a ' . static::class . '.');
+        }
+
+        return $manager;
     }
 
     public function boot(): void
@@ -80,6 +90,9 @@ class WidgetManager
         return $widget;
     }
 
+    /**
+     * @param  class-string<Widget>  $component
+     */
     protected function queueLivewireComponentForRegistration(string $component): void
     {
         $this->livewireComponents[$this->getLivewireComponentName($component)] = $component;
@@ -97,7 +110,12 @@ class WidgetManager
         $registry = 'Livewire\Mechanisms\ComponentRegistry';
 
         if (class_exists($registry)) {
-            return app($registry)->getName($component);
+            $instance = app($registry);
+            $name = is_object($instance) && method_exists($instance, 'getName') ? $instance->getName($component) : null;
+
+            if (is_string($name) && $name !== '') {
+                return $name;
+            }
         }
 
         return $component;

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * resources/lang/en/translations.php
+ *
+ * English translations for the widgets and the date filter.
+ */
+
 return [
     'filter' => [
         'title' => 'Date Filter for Umami',
@@ -18,6 +26,8 @@ return [
             'description_prefix' => '',
             'limit' => 'top :count results',
             'limit_show_all' => 'all results',
+            'limit_label' => 'Number of rows',
+            'option_label' => 'Show',
             'date_format' => 'm-d-Y',
         ],
 

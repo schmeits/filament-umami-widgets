@@ -1,17 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Concerns/Filter.php
+ *
+ * The period, unit and row limit of one Umami request, plus its cache hash.
+ */
+
 namespace Schmeits\FilamentUmami\Concerns;
 
-use Illuminate\Support\Carbon;
+use Carbon\CarbonInterface;
 use Schmeits\FilamentUmami\Enums\Unit;
 
 class Filter
 {
     protected string $id = '';
 
-    public Carbon $from;
+    public CarbonInterface $from;
 
-    public Carbon $to;
+    public CarbonInterface $to;
 
     public string $tz;
 
@@ -23,7 +31,9 @@ class Filter
 
     public function __construct()
     {
-        $this->tz = config('app.timezone');
+        $timezone = config('app.timezone');
+
+        $this->tz = is_string($timezone) ? $timezone : 'UTC';
         $this->from = now()->subDays(6)->startOfDay();
         $this->to = now()->endOfDay();
     }
@@ -39,7 +49,7 @@ class Filter
             'to' => $this->to->format('Y-m-d'),
             'tz' => $this->tz,
             'event' => $this->event,
-            'unit' => $this->unit,
+            'unit' => $this->unit->value,
             'limit' => $this->limit,
         ]);
     }
@@ -57,7 +67,7 @@ class Filter
      *
      * @return $this
      */
-    public function setFrom(Carbon $from): Filter
+    public function setFrom(CarbonInterface $from): Filter
     {
         $this->from = $from;
 
@@ -69,7 +79,7 @@ class Filter
      *
      * @return $this
      */
-    public function setTo(Carbon $to): Filter
+    public function setTo(CarbonInterface $to): Filter
     {
         $this->to = $to;
 

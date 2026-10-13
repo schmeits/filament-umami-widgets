@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Enums/UmamiMetricTypes.php
+ *
+ * The metric types of the Umami metrics endpoint.
+ */
+
 namespace Schmeits\FilamentUmami\Enums;
 
 enum UmamiMetricTypes: string

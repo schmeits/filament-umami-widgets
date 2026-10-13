@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/FilamentUmamiServiceProvider.php
+ *
+ * Registers the config, translations and views of the package and the Livewire
+ * components of all Umami widgets.
+ */
+
 namespace Schmeits\FilamentUmami;
 
-use Livewire\Features\SupportTesting\Testable;
-use Schmeits\FilamentUmami\Testing\TestsFilamentUmami;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -17,39 +24,18 @@ class FilamentUmamiServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)
-            ->hasInstallCommand(function (InstallCommand $command) {
+            ->hasConfigFile()
+            ->hasTranslations()
+            ->hasViews(static::$viewNamespace)
+            ->hasInstallCommand(function (InstallCommand $command): void {
                 $command
                     ->publishConfigFile()
                     ->askToStarRepoOnGitHub('schmeits/filament-umami-widgets');
             });
-
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
-
-        if (file_exists($package->basePath('/../resources/lang'))) {
-            $package->hasTranslations();
-        }
-
-        if (file_exists($package->basePath('/../resources/views'))) {
-            $package->hasViews(static::$viewNamespace);
-        }
     }
-
-    public function packageRegistered(): void {}
 
     public function packageBooted(): void
     {
         WidgetManager::make()->boot();
-
-        // Testing
-        Testable::mixin(new TestsFilamentUmami);
-    }
-
-    protected function getAssetPackageName(): ?string
-    {
-        return 'schmeits/filament-umami-widgets';
     }
 }

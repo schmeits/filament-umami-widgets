@@ -1,13 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Concerns/UmamiClient.php
+ *
+ * HTTP client for the Umami API: authenticates (self-hosted login or cloud api
+ * key), performs the calls and caches the responses.
+ */
+
 namespace Schmeits\FilamentUmami\Concerns;
 
+use Closure;
+use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Schmeits\FilamentUmami\Enums\UmamiMetricTypes;
 use Schmeits\FilamentUmami\Enums\UmamiType;
 use Schmeits\FilamentUmami\Enums\UmamiWebsiteStats;
+use Throwable;
 
 class UmamiClient
 {
@@ -17,59 +29,66 @@ class UmamiClient
 
     private string $baseUrl;
 
-    private string $api_key;
-
-    private ?string $site_id;
+    private string $site_id;
 
     /**
-     * @throws \Exception
-     * @throws \Throwable
+     * Prefix for every cache key, unique per Umami server and website. Without
+     * it, two apps or panels that share a cache store would read each other's
+     * statistics and login token.
+     */
+    private string $cachePrefix;
+
+    /**
+     * @throws Exception when the configuration is incomplete
      */
     public function __construct()
     {
-        $this->type = UmamiType::from(config('filament-umami-widgets.type', 'self-hosted'));
+        $type = UmamiType::tryFrom(self::configString('type', 'self-hosted'));
 
-        $this->baseUrl = str(config('filament-umami-widgets.api_endpoint_url'))->rtrim('/');
+        if ($type === null) {
+            throw new Exception('Umami type must be "self-hosted" or "cloud".');
+        }
 
-        // minimum timout must be larger than 1 second
-        $timeout = max(intval(config('filament-umami-widgets.timeout', 5)), 1);
+        $this->type = $type;
+
+        $this->baseUrl = rtrim(self::configString('api_endpoint_url'), '/');
+
+        // The minimum timeout is one second.
+        $timeout = max((int) self::configString('timeout', '5'), 1);
 
         $this->http = Http::baseUrl($this->baseUrl)->timeout($timeout);
 
+        $siteId = self::configString('website_id');
+
+        if ($siteId === '') {
+            throw new Exception('Umami website ID is required.');
+        }
+
+        $this->site_id = $siteId;
+        $this->cachePrefix = 'filament-umami-widgets:' . md5($this->type->value . '|' . $this->baseUrl . '|' . $this->site_id) . ':';
+
         if ($this->type === UmamiType::TYPE_SELF_HOSTED) {
+            $username = self::configString('username');
+            $password = self::configString('password');
 
-            $username = config('filament-umami-widgets.username');
-            $password = config('filament-umami-widgets.password');
-
-            if (empty($username) || empty($password)) {
-                throw new \Exception('Umami username and password are required.');
+            if ($username === '' || $password === '') {
+                throw new Exception('Umami username and password are required.');
             }
 
             $token = $this->getToken($username, $password);
 
-            $this->http->withToken($token);
+            if ($token !== null) {
+                $this->http->withToken($token);
+            }
+        } else {
+            $apiKey = self::configString('cloud_api_key');
 
-        } elseif ($this->type === UmamiType::TYPE_CLOUD) {
-
-            // Read first, then check, then assign. The property is typed as
-            // string, so a missing api key used to throw a TypeError here
-            // ("Cannot assign null to property ... of type string") instead of
-            // the intended, readable error message.
-            $apiKey = config('filament-umami-widgets.cloud_api_key');
-
-            if (empty($apiKey)) {
-                throw new \Exception('Umami api_key is required.');
+            if ($apiKey === '') {
+                throw new Exception('Umami api_key is required.');
             }
 
-            $this->api_key = $apiKey;
-
-            $this->http->withHeader('x-umami-api-key', $this->api_key);
-
+            $this->http->withHeader('x-umami-api-key', $apiKey);
         }
-
-        $this->site_id = config('filament-umami-widgets.website_id');
-
-        throw_if(empty($this->site_id), new \Exception('Umami website ID is required.'));
     }
 
     public function getActive(Filter $filter): int
@@ -78,70 +97,138 @@ class UmamiClient
 
         $value = $this->callWebsiteApi('active', $options);
 
-        return $value['x'] ?? 0;
+        return self::toInt($value['x'] ?? ($value['visitors'] ?? 0));
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getStats(Filter $filter): array
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_STATS, $filter);
 
-        return $this->getCachedValue('get-stats-' . $filter->hash(), function () use ($options) {
-            return $this->callWebsiteApi('stats', $options);
-        });
+        return $this->getCachedValue('get-stats-' . $filter->hash(), fn (): ?array => $this->requestWebsiteApi('stats', $options));
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getPageViewsAndSessions(): array
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_PAGEVIEWS, new Filter);
 
-        return $this->getCachedValue('get-pageviews', function () use ($options) {
-            return $this->callWebsiteApi('pageviews', $options);
-        });
+        return $this->getCachedValue('get-pageviews', fn (): ?array => $this->requestWebsiteApi('pageviews', $options));
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getWebsiteEvents(Filter $filter): array
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_EVENTS, $filter);
 
-        return $this->getCachedValue('get-events-' . $filter->hash(), function () use ($options) {
-            return $this->callWebsiteApi('events', $options);
-        });
+        return $this->getCachedValue('get-events-' . $filter->hash(), fn (): ?array => $this->requestWebsiteApi('events', $options));
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getMetrics(Filter $filter, UmamiMetricTypes $type): array
     {
         $options = $this->getDefaultOptions(UmamiWebsiteStats::STAT_METRICS, $filter);
 
         $options['type'] = $type->value;
 
-        return $this->getCachedValue('get-metrics-' . $type->value . '-' . $filter->hash(), function () use ($options) {
-            return $this->callWebsiteApi('metrics', $options);
-        });
+        return $this->getCachedValue('get-metrics-' . $type->value . '-' . $filter->hash(), fn (): ?array => $this->requestWebsiteApi('metrics', $options));
     }
 
-    private function getCachedValue(string $key, \Closure $callback): mixed
+    /**
+     * Only successful responses are cached. A failed call returns an empty
+     * result for this request, so the dashboard recovers as soon as Umami is
+     * reachable again instead of showing zeros for the whole cache time.
+     *
+     * @param  Closure(): (array<array-key, mixed>|null)  $callback
+     * @return array<array-key, mixed>
+     */
+    private function getCachedValue(string $key, Closure $callback): array
     {
-        return Cache::remember($key, config('filament-umami-widgets.cache_time'), $callback);
-    }
+        $key = $this->cachePrefix . $key;
 
-    public function callWebsiteApi(string $url, array $options): array
-    {
-        return $this->callApi("websites/{$this->site_id}/{$url}", $options);
-    }
+        $cached = Cache::get($key);
 
-    public function callApi(string $url, array $options): array
-    {
-        $response = $this->http->get($url, $options);
-
-        if ($response->ok()) {
-            return $response->json();
+        if (is_array($cached)) {
+            return $cached;
         }
 
-        return [];
+        $value = $callback();
+
+        if ($value === null) {
+            return [];
+        }
+
+        Cache::put($key, $value, $this->cacheTime());
+
+        return $value;
     }
 
+    /**
+     * @param  array<string, mixed>  $options
+     * @return array<array-key, mixed>
+     */
+    public function callWebsiteApi(string $url, array $options): array
+    {
+        return $this->requestWebsiteApi($url, $options) ?? [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $options
+     * @return array<array-key, mixed>
+     */
+    public function callApi(string $url, array $options): array
+    {
+        return $this->request($url, $options) ?? [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $options
+     * @return array<array-key, mixed>|null
+     */
+    private function requestWebsiteApi(string $url, array $options): ?array
+    {
+        return $this->request("websites/{$this->site_id}/{$url}", $options);
+    }
+
+    /**
+     * A dashboard must not fall over because Umami is slow, down or returns
+     * something unexpected, so every failure becomes null.
+     *
+     * @param  array<string, mixed>  $options
+     * @return array<array-key, mixed>|null
+     */
+    private function request(string $url, array $options): ?array
+    {
+        try {
+            $response = $this->http->get($url, $options);
+        } catch (Throwable) {
+            return null;
+        }
+
+        if (! $response->ok()) {
+            return null;
+        }
+
+        $json = $response->json();
+
+        return is_array($json) ? $json : null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     private function getDefaultOptions(UmamiWebsiteStats $endpoint, Filter $filter): array
     {
+        $timezone = config('app.timezone');
+
         $defaultOptions = [
             'stats' => [
                 'unit' => 'day', // minute, hour, day, month, year
@@ -157,7 +244,7 @@ class UmamiClient
             ],
             'pageviews' => [
                 'unit' => 'day',
-                'timezone' => config('app.timezone'),
+                'timezone' => $timezone,
                 'url' => null,
                 'referrer' => null,
                 'pageTitle' => null,
@@ -170,14 +257,14 @@ class UmamiClient
             ],
             'events' => [
                 'unit' => 'day',
-                'timezone' => config('app.timezone'),
+                'timezone' => $timezone,
                 'url' => null,
                 'eventName' => null,
             ],
             'metrics' => [
                 'type' => 'url', // url | referrer | browser | os | device | country | event
                 'unit' => 'day',
-                'timezone' => config('app.timezone'),
+                'timezone' => $timezone,
                 'url' => null,
                 'referrer' => null,
                 'pageTitle' => null,
@@ -191,58 +278,79 @@ class UmamiClient
             'active' => [],
         ];
 
-        // default date options
         $filterOptions = [
             'startAt' => $filter->from->getTimestampMs(),
             'endAt' => $filter->to->getTimestampMs(),
             'limit' => $filter->getLimit(),
         ];
 
-        return array_merge(
-            $defaultOptions[$endpoint->value], // options based on endpoint
-            $filterOptions // filter options
-        );
+        return array_merge($defaultOptions[$endpoint->value], $filterOptions);
     }
 
     /**
-     * @throws \Exception
+     * Returns a valid token, or null when Umami cannot be reached. Wrong
+     * credentials are a configuration error and throw, like a missing setting.
+     *
+     * @throws Exception when Umami rejects the credentials
      */
-    private function getToken(string $username, string $password): string
+    private function getToken(string $username, string $password): ?string
     {
-        $token = Cache::get('umami-token');
+        $cacheKey = $this->cachePrefix . 'token:' . md5($username);
 
-        try {
-            // check existing token
-            if ($token) {
-                $response = $this->http->withToken($token)->post('/auth/verify');
-                if ($response->ok()) {
-                    $this->cacheToken($token);
+        $token = Cache::get($cacheKey);
 
+        if (is_string($token) && $token !== '') {
+            try {
+                if ((clone $this->http)->withToken($token)->post('/auth/verify')->ok()) {
                     return $token;
                 }
+            } catch (Throwable) {
+                // Verification failed, log in again below.
             }
-        } catch (\Exception $exception) {
-            //
         }
 
-        // no token, fetch it
-        $response = $this->http->post('/auth/login', [
-            'username' => $username,
-            'password' => $password,
-        ]);
-
-        if (! $response->ok()) {
-            throw new \Exception('Could not authenticate.');
+        try {
+            $response = $this->http->post('/auth/login', [
+                'username' => $username,
+                'password' => $password,
+            ]);
+        } catch (Throwable) {
+            return null;
         }
 
-        $token = $response->json()['token'];
-        $this->cacheToken($token);
+        if ($response->serverError()) {
+            return null;
+        }
+
+        $token = $response->json('token');
+
+        if (! $response->ok() || ! is_string($token) || $token === '') {
+            throw new Exception('Could not authenticate with Umami, check the username and password.');
+        }
+
+        Cache::put($cacheKey, $token, $this->cacheTime());
 
         return $token;
     }
 
-    private function cacheToken(string $token): void
+    private function cacheTime(): int
     {
-        Cache::set('umami-token', $token, config('filament-umami-widgets.cache_time', 300));
+        return max((int) self::configString('cache_time', '300'), 1);
+    }
+
+    private static function configString(string $key, string $default = ''): string
+    {
+        $value = config("filament-umami-widgets.{$key}");
+
+        if (is_string($value) || is_int($value) || is_float($value)) {
+            return trim((string) $value);
+        }
+
+        return $default;
+    }
+
+    private static function toInt(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
     }
 }

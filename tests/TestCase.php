@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * tests/TestCase.php
+ *
+ * Base test case: boots Filament, Livewire and the package.
+ */
+
 namespace Schmeits\FilamentUmami\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
@@ -13,7 +21,6 @@ use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Malzariey\FilamentDaterangepickerFilter\FilamentDaterangepickerFilterServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -23,16 +30,10 @@ use Schmeits\FilamentUmami\Tests\Fixtures\TestPanelProvider;
 
 class TestCase extends Orchestra
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Schmeits\\FilamentUmami\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
-        );
-    }
-
-    protected function getPackageProviders($app)
+    /**
+     * @return list<class-string>
+     */
+    protected function getPackageProviders($app): array
     {
         // NOTE: the order here is functional, not cosmetic.
         // Filament\Support rebinds Livewire's DataStore to its own
@@ -62,7 +63,7 @@ class TestCase extends Orchestra
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function getEnvironmentSetUp($app): void
     {
         config()->set('database.default', 'testing');
 
@@ -75,10 +76,5 @@ class TestCase extends Orchestra
         // responses leak between tests and between runs, so a test could pass on
         // data from a previous test. In memory it is.
         config()->set('cache.default', 'array');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_filament-umami-widgets_table.php.stub';
-        $migration->up();
-        */
     }
 }

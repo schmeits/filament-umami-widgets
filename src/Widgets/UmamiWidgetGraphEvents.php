@@ -1,9 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiWidgetGraphEvents.php
+ *
+ * Chart widget with the Umami events per day.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Filament\Support\RawJs;
-use Illuminate\Support\Carbon;
 use Schmeits\FilamentUmami\Facades\FilamentUmami;
 
 class UmamiWidgetGraphEvents extends UmamiBaseChartWidget
@@ -14,14 +21,24 @@ class UmamiWidgetGraphEvents extends UmamiBaseChartWidget
 
     protected string $id = 'chart_events';
 
+    /**
+     * Okabe-Ito palette: colours that stay distinguishable with the common forms
+     * of colour blindness. The legend is shown as well, so the event name is
+     * always readable as text and colour is never the only signal.
+     *
+     * @return list<string>
+     */
     protected function getColors(): array
     {
         return [
-            '#FF0000',
-            '#0FF000',
-            '#00FF00',
-            '#000FF0',
-            '#0000FF',
+            '#0072B2',
+            '#E69F00',
+            '#009E73',
+            '#CC79A7',
+            '#56B4E9',
+            '#D55E00',
+            '#F0E442',
+            '#999999',
         ];
     }
 
@@ -32,48 +49,52 @@ class UmamiWidgetGraphEvents extends UmamiBaseChartWidget
         return $colors[$id % count($colors)];
     }
 
+    /**
+     * One dataset per event name with one value per day. A day without that
+     * event counts as 0, so every dataset lines up with the date labels.
+     *
+     * @return array<string, mixed>
+     */
     protected function getData(): array
     {
         $events = FilamentUmami::websiteEvents($this->getFilter());
 
-        $uniqueTypes = collect($events)
-            ->flatMap(function ($dateEvents) {
-                return collect($dateEvents);  // Flatten collection
-            })
-            ->pluck('type')  // collect 'type' fields
-            ->unique()  // Filter unique types
-            ->values();  // Get only the values
+        $types = [];
+
+        foreach ($events as $dayEvents) {
+            foreach ($dayEvents as $event) {
+                $types[$event['type']] = true;
+            }
+        }
 
         $datasets = [];
-        foreach ($uniqueTypes as $id => $type) {
+
+        foreach (array_keys($types) as $index => $type) {
+            $data = [];
+
+            foreach ($events as $dayEvents) {
+                $count = 0;
+
+                foreach ($dayEvents as $event) {
+                    if ($event['type'] === (string) $type) {
+                        $count += $event['count'];
+                    }
+                }
+
+                $data[] = $count;
+            }
+
             $datasets[] = [
-                'label' => $type,
-                'data' => collect($events)
-                    ->map(function ($dateEvents) use ($type) {
-                        if (empty($dateEvents)) {
-                            return [0];
-                        }
-
-                        return collect($dateEvents)
-                            ->reject(function ($event) use ($type) {
-                                return $event['type'] !== $type;
-                            })
-                            ->map(function ($event) {
-                                return $event['count'] ?? 0;
-                            })->all();
-                    })->flatten()->all(),
-                'borderColor' => $this->currentColor($id),
-                'backgroundColor' => $this->currentColor($id),
+                'label' => (string) $type,
+                'data' => $data,
+                'borderColor' => $this->currentColor($index),
+                'backgroundColor' => $this->currentColor($index),
             ];
-
         }
 
         return [
             'datasets' => $datasets,
-            'labels' => collect($events)
-                ->keys()
-                ->map(fn ($item) => Carbon::make($item)->format(trans('filament-umami-widgets::translations.widget.global.date_format')))
-                ->toArray(),
+            'labels' => $this->dayLabels($events),
         ];
     }
 

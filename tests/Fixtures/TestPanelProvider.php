@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * tests/Fixtures/TestPanelProvider.php
+ *
+ * Panel with the plugin registered, used by the tests.
+ */
+
 namespace Schmeits\FilamentUmami\Tests\Fixtures;
 
 use Filament\Panel;
@@ -9,10 +17,10 @@ use Schmeits\FilamentUmami\FilamentUmamiPlugin;
 /**
  * Minimal Filament panel with the plugin registered.
  *
- * WHY: every widget in this package calls FilamentUmamiPlugin::get() for the
- * polling interval. That helper does filament('filament-umami-widgets') and so
- * only works inside a panel where the plugin is registered. Without this
- * fixture you cannot render a single widget in a test.
+ * WHY: the widgets read the polling interval and the grouped stats selection
+ * from the plugin on the current panel (FilamentUmamiPlugin::current()). This
+ * fixture makes that panel exist, so the tests cover the configured path and
+ * not only the defaults.
  */
 class TestPanelProvider extends PanelProvider
 {

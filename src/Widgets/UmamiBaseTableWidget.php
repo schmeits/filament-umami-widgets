@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiBaseTableWidget.php
+ *
+ * Base class for the Umami table widgets.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -36,15 +44,32 @@ abstract class UmamiBaseTableWidget extends Widget
     public function mount(): void
     {
         $this->heading = trans("filament-umami-widgets::translations.widget.$this->id.heading");
-        $this->option = collect($this->getOptions())->keys()->first();
+        $this->option = $this->validOption();
+
         if ($this->limitResults) {
             $this->limit = 5;
         }
     }
 
+    /**
+     * The option is a public Livewire property, so the browser can send any
+     * value. Anything that is not one of the options falls back to the first.
+     */
+    public function updatedOption(): void
+    {
+        $this->option = $this->validOption();
+    }
+
+    protected function validOption(): ?string
+    {
+        $keys = array_map(strval(...), array_keys($this->getOptions()));
+
+        return in_array($this->option, $keys, true) ? $this->option : ($keys[0] ?? null);
+    }
+
     public function getPollingInterval(): ?string
     {
-        return FilamentUmamiPlugin::get()->getPollingInterval();
+        return FilamentUmamiPlugin::current()?->getPollingInterval() ?? '60s';
     }
 
     public function getTableHeading(): string | Htmlable | null
@@ -52,6 +77,9 @@ abstract class UmamiBaseTableWidget extends Widget
         return $this->heading;
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getHeaders(): array
     {
         return [
@@ -60,6 +88,9 @@ abstract class UmamiBaseTableWidget extends Widget
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultMetricHeaderItem(string $width = '90%'): array
     {
         return [
@@ -69,6 +100,9 @@ abstract class UmamiBaseTableWidget extends Widget
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getDefaultCountHeaderItem(string $width = '10%'): array
     {
         return [
@@ -78,11 +112,17 @@ abstract class UmamiBaseTableWidget extends Widget
         ];
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getData(): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [];

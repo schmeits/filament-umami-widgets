@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
+ * tests/PluginTest.php
+ *
  * Smoke tests for the plugin class.
  *
  * WHY: FilamentUmamiPlugin is the only thing a user adds to their PanelProvider.

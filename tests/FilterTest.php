@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
+ * tests/FilterTest.php
+ *
  * Tests for the date filter.
  *
  * WHY: the filter is the one place where this package touches Filament's form

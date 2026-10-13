@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Widgets/UmamiBaseStatsWidget.php
+ *
+ * Base class for the Umami stats widgets.
+ */
+
 namespace Schmeits\FilamentUmami\Widgets;
 
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -30,7 +38,7 @@ abstract class UmamiBaseStatsWidget extends BaseWidget
 
     public function getPollingInterval(): ?string
     {
-        return FilamentUmamiPlugin::get()->getPollingInterval();
+        return FilamentUmamiPlugin::current()?->getPollingInterval() ?? '60s';
     }
 
     protected function getStats(): array

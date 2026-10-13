@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Facades/FilamentUmami.php
+ *
+ * Facade for the FilamentUmami service that the widgets read their data from.
+ */
+
 namespace Schmeits\FilamentUmami\Facades;
 
 use Illuminate\Support\Facades\Facade;
@@ -11,27 +19,28 @@ use Illuminate\Support\Facades\Facade;
  * @method static int visits(\Schmeits\FilamentUmami\Concerns\Filter $filter)
  * @method static int bounces(\Schmeits\FilamentUmami\Concerns\Filter $filter)
  * @method static string totalTime(\Schmeits\FilamentUmami\Concerns\Filter $filter)
- * @method static array metricsReferrer(\Schmeits\FilamentUmami\Concerns\Filter $getFilter)
- * @method static array metricsPages(\Schmeits\FilamentUmami\Concerns\Filter $getFilter)
- * @method static array metricsCity(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsTitle(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsRegion(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsOs(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsDevice(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsCountry(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsBrowser(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsLanguage(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsScreen(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsEvent(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array metricsQuery(\Schmeits\FilamentUmami\Concerns\Filter $setLimit)
- * @method static array pageViewsAndSessions()
- * @method static array websiteEvents(\Schmeits\FilamentUmami\Concerns\Filter $getFilter)
+ * @method static list<array{metric: string, count: int}> metricsReferrer(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsPages(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, country: string, count: int}> metricsCity(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsTitle(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, country: string, count: int}> metricsRegion(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsOs(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsDevice(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsCountry(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsBrowser(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsLanguage(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsScreen(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metricsEvent(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string|array<array-key, mixed>, count: int}> metricsQuery(\Schmeits\FilamentUmami\Concerns\Filter $filter)
+ * @method static list<array{metric: string, count: int}> metrics(\Schmeits\FilamentUmami\Concerns\Filter $filter, \Schmeits\FilamentUmami\Enums\UmamiMetricTypes $type)
+ * @method static array{pageviews: array<string, int>, sessions: array<string, int>} pageViewsAndSessions()
+ * @method static array<string, list<array{type: string, count: int}>> websiteEvents(\Schmeits\FilamentUmami\Concerns\Filter $filter)
  *
  * @see \Schmeits\FilamentUmami\FilamentUmami
  */
 class FilamentUmami extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return \Schmeits\FilamentUmami\FilamentUmami::class;
     }

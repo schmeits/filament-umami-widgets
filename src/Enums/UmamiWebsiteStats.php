@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * src/Enums/UmamiWebsiteStats.php
+ *
+ * The Umami website endpoints, used to pick the default request options.
+ */
+
 namespace Schmeits\FilamentUmami\Enums;
 
 enum UmamiWebsiteStats: string

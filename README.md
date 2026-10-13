@@ -13,7 +13,7 @@ These are some Filament widgets for [Umami](https://umami.is/) (Website Analytic
 
 | Package version | Filament | Laravel | PHP |
 |---|---|---|---|
-| 2.x | 4.x and 5.x | 11.28+, 12 and 13 | 8.2+ (Laravel 13 needs 8.3+) |
+| 2.x | 4.x and 5.x | 12 and 13 | 8.2+ (Laravel 13 needs 8.3+) |
 | 1.x (branch `3.x`) | 3.x | 10, 11 and 12 | 8.1+ |
 
 ## Installation
