@@ -2,7 +2,7 @@
 
 All notable changes to `filament-umami-widgets` will be documented in this file.
 
-## 2.1.0 - unreleased
+## 2.1.0 - 2026-10-13
 
 Robustness, accessibility and maintenance. No changes needed in your code.
 
