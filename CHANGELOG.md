@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 - unreleased
+## 2.0.0 - 2026-10-13
 
 Support for Filament 4 and 5, and with that Laravel 13.
 
